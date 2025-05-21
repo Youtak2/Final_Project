@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import IndexView from '../views/IndexView.vue'
 import KakaoCallback from '../views/KakaoCallback.vue'
-
+import AuthView from '@/views/AuthView.vue'
+import SignupView from '@/views/SignupView.vue'
 const routes = [
   {
     path: '/',
@@ -13,6 +14,18 @@ const routes = [
   name: 'kakao-callback',
   component: KakaoCallback,
 }
+,
+  {
+    path: '/auth',
+    name: 'Auth',
+    component: AuthView,
+  },
+
+  {
+    path:'/signup',
+    name:'Signup',
+    component:SignupView,
+  }
 ]
 
 const router = createRouter({

@@ -17,6 +17,7 @@
         <RouterLink to="/notice">공지/공시</RouterLink>
       </nav>
       <div class="nav-icons">
+        <RouterLink to="/auth" class="mypage-link">로그인</RouterLink>
         <input type="text" placeholder="검색..." class="search-input" />
         <span class="icon">🔍</span>
         <RouterLink to="/mypage" class="mypage-link">마이페이지</RouterLink>
@@ -26,19 +27,18 @@
 
     <!-- 본문 -->
     <main>
-      <IndexView />
       <RouterView />
     </main>
 
     <!-- 푸터 -->
     <footer class="footer">
-      <p>ⓒ 신한자산운용. All rights reserved.</p>
+      <p>ⓒ 공탁금. All rights reserved.</p>
     </footer>
   </div>
 </template>
 
 <script setup>
-import IndexView from "@/views/IndexView.vue";
+import AuthView from '@/views/AuthView.vue'
 </script>
 
 <style scoped>

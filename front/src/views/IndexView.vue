@@ -2,12 +2,9 @@
   <div class="video-container">
     <video autoplay muted loop playsinline>
       <source src="@/video/mainpagevideo.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
     </video>
   </div>
     <div>
-    <h1>Index View</h1>
-    <button @click="kakaoLogin">카카오 로그인</button>
   </div>
 </template>
 
