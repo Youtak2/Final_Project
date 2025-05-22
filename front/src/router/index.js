@@ -6,6 +6,8 @@ import SignupView from '@/views/SignupView.vue'
 import SignInView from '@/views/SignInView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import PortfolioView from '@/views/PortfolioView.vue'
+import BankSearchView from '@/views/BankSearchView.vue'
+import DepositView from '@/views/DepositView.vue'
 const routes = [
   {
     path: '/',
@@ -37,6 +39,17 @@ const routes = [
     path:'/mypage/portfolio',
     name:'portfolio',
     component:PortfolioView,
+  },
+    {
+    path: '/bank-search',
+    name: 'BankSearchView',
+    component: BankSearchView,
+  },
+  // 금융 상품 목록
+  {
+    path: '/deposit',
+    name: 'deposit',
+    component: DepositView,
   },
 ]
 

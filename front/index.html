@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="ko">
   <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
+    <meta charset="UTF-8" />
+    <title>Vue App</title>
+
+    <!-- ✅ Kakao Map 전역 설정 -->
+    <script>
+      window.config = {
+        apiKey: '0af238b62ebee50a156ca780853b0f6b',
+        restApiKey: '9a9661d3363caf49aa0f1613461b76e6'
+      };
+    </script>
+
+    <!-- ✅ 이 위치에서 정확히 로드되어야 함 -->
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=0af238b62ebee50a156ca780853b0f6b&autoload=false&libraries=services"></script>
   </head>
+
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>

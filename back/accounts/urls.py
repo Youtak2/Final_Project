@@ -3,9 +3,8 @@ from . import views
 
 urlpatterns = [
     path('check-username/', views.check_username),
-    path('signup/', views.signup),  # ✅ 이 줄 추가
+    path('signup/', views.signup),
     path('login/', views.login_view),
     path('update/', views.update_user),
-    
-    
+    path('portfolio/', views.update_portfolio),  # ✅ 수정 완료
 ]

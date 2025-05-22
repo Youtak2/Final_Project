@@ -11,7 +11,7 @@
         <RouterLink to="/">회사소개</RouterLink>
         <RouterLink to="/esg">예적금 금리 비교</RouterLink>
         <RouterLink to="/etf">현물 상품 비교</RouterLink>
-        <RouterLink to="/funds">근처 은행 검색</RouterLink>
+        <RouterLink to="/bank-search">근처 은행 검색</RouterLink>
         <RouterLink to="/invest">투자정보</RouterLink>
         <RouterLink to="/lounge">금융상품 추천</RouterLink>
         <RouterLink to="/notice">공지/공시</RouterLink>
