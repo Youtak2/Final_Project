@@ -4,9 +4,10 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 User = get_user_model()
-
-
 @api_view(['GET'])  # ✅ 반드시 GET만 받도록 지정
 def check_username(request):
     username = request.GET.get('username')
@@ -46,3 +47,22 @@ def login_view(request):
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
     return Response({'error': 'Invalid credentials'}, status=400)
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def update_user(request):
+    user = request.user
+    user.first_name = request.data.get('first_name', user.first_name)
+    user.email = request.data.get('email', user.email)
+    asset = request.data.get('asset')
+    salary = request.data.get('salary')
+    age = request.data.get('age')
+
+    if asset is not None:
+        user.asset = asset
+    if salary is not None:
+        user.salary = salary
+    if age is not None:
+        user.age = age
+
+    user.save()
+    return Response({'message': '유저 정보 수정 완료'})

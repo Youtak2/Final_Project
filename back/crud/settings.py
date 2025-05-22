@@ -6,8 +6,6 @@ SECRET_KEY = 'django-insecure-p-=$kp$heta^naj20ieb0_3va0tnhjq72tm8)qctko6ie_@bzn
 DEBUG = True
 ALLOWED_HOSTS = []
 
-SITE_ID = 1  # allauth 필수
-
 # Application definition
 INSTALLED_APPS = [
     # Django 기본 앱
@@ -22,29 +20,30 @@ INSTALLED_APPS = [
     # 인증/REST 관련
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
+
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',  
-
-    # 기타
-    'corsheaders',
+    'allauth.socialaccount',
 
     # 내 앱
     'accounts',
 ]
 
+SITE_ID = 1  # allauth 필수
+
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',                 # ✅ 가장 위에 있어야 함
+    'corsheaders.middleware.CorsMiddleware',  # 가장 위에 위치
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',          # ✅ 반드시 추가
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'crud.urls'
@@ -95,12 +94,33 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 # CORS 설정
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",   # ✅ 이 줄이 반드시 필요
+    "http://127.0.0.1:8000",
+]
 
+CORS_ALLOW_CREDENTIALS = True
 # allauth 설정
 ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-ACCOUNT_EMAIL_REQUIRED = False
+# 로그인 시 사용할 필드 설정 (username / email / 둘 다 등)
+ACCOUNT_LOGIN_METHODS = {"username"}  # ✅ 최신 방식
+
+# 회원가입 시 입력 필드 명시
+ACCOUNT_SIGNUP_FIELDS = ["username*", "password1*", "password2*"]  # ✅ 최신 방식
+
+# 인증 백엔드 설정
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+AUTH_USER_MODEL = 'accounts.CustomUser'
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer'
+}

@@ -1,6 +1,9 @@
 <template>
   <div class="mypage-container">
-    <h2>{{ username }} 님의 프로필 페이지</h2>
+    <h2>
+      반갑습니다. {{ username }}님
+      <span class="vip-inline">{{ vipLevel }}</span>
+    </h2>
 
     <!-- 탭 -->
     <div class="tab-menu">
@@ -14,19 +17,44 @@
       <h3>기본 정보 수정</h3>
       <div v-for="(item, key) in userInfo" :key="key" class="info-row">
         <label>{{ key }}</label>
-        <input :value="item" disabled />
-        <button class="edit-btn">수정하기</button>
+        <input
+          :value="userInfo[key]"
+          :disabled="!editable[key] || key === 'ID'"
+          @input="updateValue($event, key)"
+        />
+        <button
+          v-if="key !== 'ID'"
+          class="edit-btn"
+          @click="toggleEdit(key)"
+        >
+          {{ editable[key] ? '저장' : '수정하기' }}
+        </button>
+        <!-- 보유자산 VIP 뱃지 -->
+        <span v-if="key === '보유자산'" class="vip-badge">{{ vipLevel }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import axios from 'axios'
 
+const userId = ref(null)
 const username = ref('')
-const userInfo = ref({})
+const userInfo = reactive({})
+const editable = reactive({})
+
+// VIP 등급 계산
+const vipLevel = computed(() => {
+  const raw = userInfo['보유자산']?.toString().replace(/[^0-9]/g, '')
+  const asset = Number(raw)
+  if (isNaN(asset)) return ''
+  if (asset >= 100000000000) return '🔥 VVVVIP'
+  if (asset >= 10000000000) return '👑 VVIP'
+  if (asset >= 100000000) return '💎 VIP'
+  return ''
+})
 
 onMounted(async () => {
   const token = localStorage.getItem('token')
@@ -39,23 +67,75 @@ onMounted(async () => {
       }
     })
 
-    // 응답으로 받은 사용자 정보 설정
     const user = res.data
+    userId.value = user.pk || user.id
     username.value = user.username
-    userInfo.value = {
-      ID: user.username,
-      Email: user.email,
-      Nickname: user.first_name || '닉네임을 설정해주세요',
-      나이: '입력해주세요',           // 추가 정보는 백엔드에서 제공하도록 확장 가능
-      현재가입금액: '0',
-      연봉: '입력해주세요'
-    }
+
+Object.assign(userInfo, {
+  ID: user.username,
+  Email: user.email || '',
+  보유자산: user.asset ?? 0,
+  연봉: user.salary ?? '',
+  나이: user.age ?? ''
+})
+
+    Object.keys(userInfo).forEach(key => {
+      editable[key] = false
+    })
   } catch (err) {
     console.error('유저 정보 불러오기 실패:', err)
   }
 })
-</script>
 
+function toggleEdit(key) {
+  if (!editable[key] && ['연봉', '나이'].includes(key) && userInfo[key] === '입력해주세요') {
+    userInfo[key] = ''
+  }
+
+  if (editable[key]) {
+    saveField(key)
+  }
+
+  editable[key] = !editable[key]
+}
+
+function updateValue(event, key) {
+  userInfo[key] = event.target.value
+}
+
+async function saveField(key) {
+  const token = localStorage.getItem('token')
+  if (!token) return
+
+  const payloadMap = {
+    'Email': 'email',
+    '보유자산': 'asset',
+    '연봉': 'salary',
+    '나이': 'age'
+  }
+
+  const field = payloadMap[key]
+  if (!field) return
+
+  if (!userInfo[key]?.toString().trim()) {
+    alert(`${key}은(는) 비워둘 수 없습니다.`)
+    return
+  }
+
+  try {
+    await axios.patch('http://127.0.0.1:8000/api/v1/accounts/update/', {
+      [field]: userInfo[key]
+    }, {
+      headers: {
+        Authorization: `Token ${token}`
+      }
+    })
+    console.log(`${key} 저장 완료`)
+  } catch (err) {
+    console.error(`${key} 저장 실패`, err.response?.data || err)
+  }
+}
+</script>
 
 <style scoped>
 .mypage-container {
@@ -75,6 +155,10 @@ h2 {
   text-align: center;
   border-radius: 6px;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 .tab-menu {
@@ -123,5 +207,12 @@ h2 {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.vip-badge,
+.vip-inline {
+  margin-left: 10px;
+  font-weight: bold;
+  color: #e67e22;
 }
 </style>
