@@ -2,32 +2,44 @@
   <div class="signup-container">
     <h2>회원가입</h2>
     <form @submit.prevent="handleSignup">
-    <div>
-        <label>성함:</label>
-        <input v-model="name" type="text" required />
+      <!-- 이름 -->
+      <div class="form-group">
+        <label>이름</label>
+        <input v-model="name" type="text" required placeholder="이름 입력" />
       </div>
-      <div>
-        <label>아이디:</label>
-        <input v-model="username" type="text" required />
-        <button type="button" @click="checkUsername">중복 체크</button>
+
+      <!-- 이메일 -->
+      <div class="form-group">
+        <label>이메일</label>
+        <input v-model="email" type="email" required placeholder="이메일 입력" />
+      </div>
+
+      <!-- 아이디 -->
+      <div class="form-group">
+        <label>아이디</label>
+        <div class="inline-field">
+          <input v-model="username" type="text" required placeholder="아이디 (6~20자)" />
+          <button type="button" @click="checkUsername">중복 확인</button>
+        </div>
         <p v-if="usernameStatus === 'available'" class="status available">사용 가능한 아이디입니다.</p>
         <p v-if="usernameStatus === 'taken'" class="status taken">이미 사용 중인 아이디입니다.</p>
       </div>
 
-
-
-      <div>
-        <label>비밀번호:</label>
-        <input v-model="password" type="password" required />
+      <!-- 비밀번호 -->
+      <div class="form-group">
+        <label>비밀번호</label>
+        <input v-model="password" type="password" required placeholder="8~20자: 영문, 숫자, 특수문자 조합" />
       </div>
 
-      <div>
-        <label>비밀번호 확인:</label>
-        <input v-model="password2" type="password" required />
+      <!-- 비밀번호 확인 -->
+      <div class="form-group">
+        <label>비밀번호 확인</label>
+        <input v-model="password2" type="password" required placeholder="비밀번호 확인" />
         <p v-if="passwordMismatch" class="status taken">비밀번호가 일치하지 않습니다.</p>
       </div>
 
-      <button type="submit">회원가입</button>
+      <!-- 제출 -->
+      <button type="submit" class="signup-button">가입하기</button>
     </form>
   </div>
 </template>
@@ -37,12 +49,14 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
+const router = useRouter()
+
+const name = ref('')
+const email = ref('')
 const username = ref('')
-const name = ref('') // 성함
 const password = ref('')
 const password2 = ref('')
 const usernameStatus = ref(null)
-const router = useRouter()
 
 const passwordMismatch = computed(() => {
   return password.value && password2.value && password.value !== password2.value
@@ -69,8 +83,9 @@ const handleSignup = async () => {
 
   try {
     await axios.post('http://127.0.0.1:8000/api/v1/accounts/signup/', {
+      name: name.value,
+      email: email.value,
       username: username.value,
-      name: name.value, // 이름 추가
       password: password.value,
       password2: password2.value
     })
@@ -85,25 +100,61 @@ const handleSignup = async () => {
 
 <style scoped>
 .signup-container {
-  max-width: 400px;
+  max-width: 450px;
   margin: 3rem auto;
   padding: 2rem;
   background-color: #fff;
-  border: 1px solid #eee;
   border-radius: 10px;
-  text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-form {
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.inline-field {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.inline-field input {
+  flex: 1;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signup-button {
+  width: 100%;
+  margin-top: 1rem;
+  background-color: #00c471;
 }
 
 .status {
   font-size: 0.9rem;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
 .status.available {

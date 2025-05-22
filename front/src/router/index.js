@@ -3,6 +3,8 @@ import IndexView from '../views/IndexView.vue'
 import KakaoCallback from '../views/KakaoCallback.vue'
 import AuthView from '@/views/AuthView.vue'
 import SignupView from '@/views/SignupView.vue'
+import SignInView from '@/views/SignInView.vue'
+import MyPageView from '@/views/MyPageView.vue'
 const routes = [
   {
     path: '/',
@@ -25,7 +27,11 @@ const routes = [
     path:'/signup',
     name:'Signup',
     component:SignupView,
-  }
+  },
+  { path: '/login', name: 'login', component: SignInView },
+  {  path: '/mypage',
+  name: 'mypage',
+  component: MyPageView}, 
 ]
 
 const router = createRouter({
