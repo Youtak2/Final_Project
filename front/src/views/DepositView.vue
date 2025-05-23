@@ -1,50 +1,161 @@
 <template>
-  <v-container>
-    <ViewTitle 
-      title="예적금 금리 비교" 
-      subtitle="최적의 금융상품을 한눈에 비교해 보세요"
-    />
-    <v-card class="pa-4">
-      <FinancialProductFilter
-        :products="financeStore.financialProducts"
-        @update:filters="updateFilters"
-        @update:selectedTerm="updateSelectedTerm"
-      />
-      
-      <FinancialProductTable
-        :filters="filters"
-        :selectedTerm="selectedTerm"
-      />
-    </v-card>
-  </v-container>
+  <div class="deposit-container">
+    <h2>예적금 금리 비교</h2>
+
+    <!-- 필터 -->
+    <div class="filters">
+      <select v-model="filters.productType">
+        <option value="">상품구분</option>
+        <option value="예금">예금</option>
+        <option value="적금">적금</option>
+      </select>
+
+      <button @click="fetchProducts">조회</button>
+    </div>
+
+    <!-- 은행 체크박스 -->
+    <div class="bank-checkboxes">
+      <label v-for="bank in bankList" :key="bank">
+        <input type="checkbox" :value="bank" v-model="filters.banks" />
+        {{ bank }}
+      </label>
+    </div>
+
+    <!-- 금리 테이블 -->
+    <table>
+      <thead>
+        <tr>
+          <th>공시 제출월</th>
+          <th>금융회사</th>
+          <th>상품명</th>
+          <th @click="sortKey = 'rate_6'">6개월 금리</th>
+          <th @click="sortKey = 'rate_12'">12개월 금리</th>
+          <th @click="sortKey = 'rate_24'">24개월 금리</th>
+          <th @click="sortKey = 'rate_36'">36개월 금리</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in paginatedItems" :key="item.name + item.bank_name">
+          <td>{{ item.disclosure_month }}</td>
+          <td>{{ item.bank_name }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.rate_6 ?? '-' }}</td>
+          <td>{{ item.rate_12 ?? '-' }}</td>
+          <td>{{ item.rate_24 ?? '-' }}</td>
+          <td>{{ item.rate_36 ?? '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 페이지네이션 -->
+    <div class="pagination">
+      <label>Items per page:
+        <select v-model="itemsPerPage">
+          <option :value="10">10</option>
+          <option :value="20">20</option>
+        </select>
+      </label>
+      {{ currentPage }} / {{ totalPages }}
+      <button :disabled="currentPage === 1" @click="currentPage--">←</button>
+      <button :disabled="currentPage === totalPages" @click="currentPage++">→</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useFinanceStore } from '@/stores/financialProduct'
-import FinancialProductFilter from '@/components/finance/FinancialProductFilter.vue'
-import FinancialProductTable from '@/components/finance/FinancialProductTable.vue'
-import ViewTitle from '@/components/common/ViewTitle.vue'
-const financeStore = useFinanceStore()
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
+
 const filters = ref({
-  bank: null,
-  term: null,
-  category: null
+  productType: '',
+  banks: [],
 })
-const selectedTerm = ref(null)
 
-const updateFilters = (newFilters) => {
-  filters.value = newFilters
+const allItems = ref([])
+const bankList = ref([])
+const itemsPerPage = ref(10)
+const currentPage = ref(1)
+const sortKey = ref('rate_12') // 기본 정렬 기준
+
+const fetchProducts = async () => {
+  const allRes = await axios.get('http://127.0.0.1:8000/api/v1/deposit/products/')
+  const banks = new Set(allRes.data.map(item => item.bank_name))
+  bankList.value = Array.from(banks).sort()
+
+  const res = await axios.get('http://127.0.0.1:8000/api/v1/deposit/products/', {
+    params: {
+      productType: filters.value.productType,
+      bank: filters.value.banks,
+    },
+    paramsSerializer: params => {
+      const query = new URLSearchParams()
+      for (const key in params) {
+        if (Array.isArray(params[key])) {
+          params[key].forEach(val => query.append(key, val))
+        } else if (params[key]) {
+          query.append(key, params[key])
+        }
+      }
+      return query.toString()
+    }
+  })
+
+  allItems.value = res.data
+  currentPage.value = 1
 }
 
-const updateSelectedTerm = (term) => {
-  selectedTerm.value = term
-}
+const sortedItems = computed(() => {
+  return [...allItems.value].sort((a, b) => (b[sortKey.value] || 0) - (a[sortKey.value] || 0))
+})
 
-// 컴포넌트 마운트 시 상품 데이터 로드
-financeStore.getFinancialProducts()
+const paginatedItems = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  return sortedItems.value.slice(start, start + itemsPerPage.value)
+})
+
+const totalPages = computed(() => Math.ceil(sortedItems.value.length / itemsPerPage.value))
+
+onMounted(fetchProducts)
 </script>
 
 <style scoped>
+.deposit-container {
+  padding: 20px;
+}
 
+.filters {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.bank-checkboxes {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
+  cursor: pointer;
+}
+
+th:hover {
+  background-color: #f0f0f0;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 </style>

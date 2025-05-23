@@ -11,6 +11,7 @@ import CommunityView from '@/views/CommunityView.vue'
 import CommunityDetailView from '@/views/CommunityDetailView.vue'
 import CommunityWriteView from '@/views/CommunityWriteView.vue'
 import UserProfileView from '@/views/UserProfileView.vue'           // ✅ 추가
+import DepositView from '@/views/DepositView.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -30,6 +31,7 @@ const routes = [
   { path: '/mypage', name: 'mypage', component: MyPageView, beforeEnter: requireAuth },
   { path: '/mypage/portfolio', name: 'portfolio', component: PortfolioView, beforeEnter: requireAuth },
   { path: '/bank-search', name: 'BankSearchView', component: BankSearchView },
+  { path: '/deposit', name: 'deposit', component: DepositView },
 
   // ✅ 커뮤니티
   { path: '/community/articles', name: 'community', component: CommunityView },

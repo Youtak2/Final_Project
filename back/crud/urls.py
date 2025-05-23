@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),  # 회원가입
     path('api/v1/accounts/', include('accounts.urls')),                     # check-username, signup
     path('api/v1/community/',include('community.urls')),
+    path('api/v1/deposit/', include('deposit.urls')),                       # 예적금 금리비교
 ]

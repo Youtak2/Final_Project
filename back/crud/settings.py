@@ -31,20 +31,24 @@ INSTALLED_APPS = [
     # 내 앱
     'accounts',
     'community',
+    'deposit',
 ]
 
 SITE_ID = 1  # allauth 필수
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # 가장 위에 위치
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware',
+
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'crud.urls'
@@ -125,3 +129,13 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer'
 }
+
+# .env 불러오기
+import environ
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+FINLIFE_API_KEY = env("FINLIFE_API_KEY")
