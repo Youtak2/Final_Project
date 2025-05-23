@@ -47,15 +47,49 @@ function updateSigungu() {
 function initMap() {
   console.log('✅ 지도 초기화 중')
   const mapContainer = document.getElementById('map')
+
+  // 기본 좌표 (사용자 거부 시 fallback)
+  const defaultCenter = new kakao.maps.LatLng(37.49818, 127.027386)
+
   const options = {
-    center: new kakao.maps.LatLng(37.49818, 127.027386),
+    center: defaultCenter,
     level: 3
   }
+
   map.value = new kakao.maps.Map(mapContainer, options)
   infowindow.value = new kakao.maps.InfoWindow({ zIndex: 1 })
+
+  // ✅ 사용자 위치 가져오기
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+        const userLocation = new kakao.maps.LatLng(lat, lng)
+        map.value.setCenter(userLocation)
+
+        // 사용자 위치에 마커 표시 (선택사항)
+        const marker = new kakao.maps.Marker({
+          position: userLocation,
+          map: map.value,
+          title: '현재 위치'
+        })
+
+        console.log('📍 사용자 위치로 지도 이동 완료')
+      },
+      (error) => {
+        console.warn('⚠️ 위치 정보 사용 거부 또는 오류', error)
+        // 기본 좌표 유지
+      }
+    )
+  } else {
+    console.warn('❌ 이 브라우저는 Geolocation을 지원하지 않음')
+  }
+
   kakaoReady.value = true
   console.log('✅ kakaoReady = true 설정됨')
 }
+
 
 
 function searchBank() {

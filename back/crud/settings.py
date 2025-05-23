@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
     # 내 앱
     'accounts',
+    'community',
 ]
 
 SITE_ID = 1  # allauth 필수

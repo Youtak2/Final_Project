@@ -1,11 +1,14 @@
-
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model, authenticate
+from django.shortcuts import get_object_or_404
+
 from .serializers import CustomUserDetailsSerializer
+
+
 User = get_user_model()
 
 # ✅ 아이디 중복 확인
@@ -17,7 +20,6 @@ def check_username(request):
         return Response({'available': False})
     exists = User.objects.filter(username=username).exists()
     return Response({'available': not exists})
-
 
 # ✅ 회원가입
 @api_view(['POST'])
@@ -43,7 +45,6 @@ def signup(request):
     )
     return Response({'message': '회원가입 성공!'}, status=status.HTTP_201_CREATED)
 
-
 # ✅ 로그인 (토큰 발급)
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -56,8 +57,7 @@ def login_view(request):
         return Response({'token': token.key})
     return Response({'error': '아이디 또는 비밀번호가 올바르지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
-
-# ✅ 사용자 정보 수정 (로그인 필요)
+# ✅ 사용자 정보 수정
 @api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def update_user(request):
@@ -78,15 +78,25 @@ def update_user(request):
     user.save()
     return Response({'message': '유저 정보 수정 완료'})
 
-@api_view(['PATCH'])
+# ✅ 포트폴리오 정보 조회 & 수정
+@api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def update_portfolio(request):
-    print('📦 받은 데이터:', request.data)
-
     user = request.user
-    serializer = CustomUserDetailsSerializer(user, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'message': '포트폴리오 업데이트 완료'})
-    print('❌ serializer error:', serializer.errors)
-    return Response(serializer.errors, status=400)
+
+    if request.method == 'GET':
+        # ✅ 현재 사용자 정보 반환
+        return Response({
+            'saving_type': user.saving_type,
+            'invest_type': user.invest_type,
+            'main_bank': user.main_bank
+        })
+
+    elif request.method == 'PATCH':
+        print('📦 받은 데이터:', request.data)
+        serializer = CustomUserDetailsSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': '포트폴리오 업데이트 완료'})
+        print('❌ serializer error:', serializer.errors)
+        return Response(serializer.errors, status=400)

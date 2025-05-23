@@ -22,4 +22,5 @@ urlpatterns = [
     path('api/v1/auth/', include('dj_rest_auth.urls')),                     # 로그인, 로그아웃
     path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),  # 회원가입
     path('api/v1/accounts/', include('accounts.urls')),                     # check-username, signup
+    path('api/v1/community/',include('community.urls')),
 ]

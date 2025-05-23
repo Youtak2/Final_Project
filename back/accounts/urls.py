@@ -7,4 +7,5 @@ urlpatterns = [
     path('login/', views.login_view),
     path('update/', views.update_user),
     path('portfolio/', views.update_portfolio),  # ✅ 수정 완료
+
 ]

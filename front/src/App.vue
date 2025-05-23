@@ -15,6 +15,7 @@
         <RouterLink to="/invest">투자정보</RouterLink>
         <RouterLink to="/lounge">금융상품 추천</RouterLink>
         <RouterLink to="/notice">공지/공시</RouterLink>
+        <RouterLink to="/community/articles">커뮤니티</RouterLink>
       </nav>
 
       <div class="nav-icons">
@@ -30,7 +31,20 @@
           <RouterLink to="/auth" class="mypage-link">로그인</RouterLink>
         </template>
 
-        <span class="icon">☰</span>
+<div
+  class="dropdown-wrapper"
+  @mouseover="showDropdown = true"
+  @mouseleave="showDropdown = false"
+>
+  <span class="icon">≡</span>
+  <div class="dropdown-menu" v-if="showDropdown">
+    <RouterLink to="/notice">공지사항</RouterLink>
+    <RouterLink to="/terms">이용약관</RouterLink>
+    <RouterLink to="/community">커뮤니티</RouterLink>
+    <RouterLink to="/faq">자주 묻는 질문</RouterLink>
+  </div>
+</div>
+
       </div>
     </header>
 
@@ -49,6 +63,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+const showDropdown = ref(false)
 
 const isLogin = ref(false)
 const router = useRouter()
@@ -158,5 +173,34 @@ main {
   font-size: 0.85rem;
   cursor: pointer;
   text-decoration: underline;
+}
+.dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  z-index: 999;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu a {
+  text-decoration: none;
+  color: #333;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f5f5f5;
 }
 </style>

@@ -7,50 +7,37 @@ import SignInView from '@/views/SignInView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import PortfolioView from '@/views/PortfolioView.vue'
 import BankSearchView from '@/views/BankSearchView.vue'
-import DepositView from '@/views/DepositView.vue'
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: IndexView
-  },
-{
-  path: '/oauth/callback',
-  name: 'kakao-callback',
-  component: KakaoCallback,
-}
-,
-  {
-    path: '/auth',
-    name: 'Auth',
-    component: AuthView,
-  },
+import CommunityView from '@/views/CommunityView.vue'
+import CommunityDetailView from '@/views/CommunityDetailView.vue'
+import CommunityWriteView from '@/views/CommunityWriteView.vue'
+import UserProfileView from '@/views/UserProfileView.vue'           // ✅ 추가
 
-  {
-    path:'/signup',
-    name:'Signup',
-    component:SignupView,
-  },
+const requireAuth = (to, from, next) => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    alert('로그인이 필요합니다.')
+    return next('/login')
+  }
+  next()
+}
+
+const routes = [
+  { path: '/', name: 'home', component: IndexView },
+  { path: '/oauth/callback', name: 'kakao-callback', component: KakaoCallback },
+  { path: '/auth', name: 'Auth', component: AuthView },
+  { path: '/signup', name: 'Signup', component: SignupView },
   { path: '/login', name: 'login', component: SignInView },
-  {  path: '/mypage',
-  name: 'mypage',
-  component: MyPageView}, 
-  {
-    path:'/mypage/portfolio',
-    name:'portfolio',
-    component:PortfolioView,
-  },
-    {
-    path: '/bank-search',
-    name: 'BankSearchView',
-    component: BankSearchView,
-  },
-  // 금융 상품 목록
-  {
-    path: '/deposit',
-    name: 'deposit',
-    component: DepositView,
-  },
+  { path: '/mypage', name: 'mypage', component: MyPageView, beforeEnter: requireAuth },
+  { path: '/mypage/portfolio', name: 'portfolio', component: PortfolioView, beforeEnter: requireAuth },
+  { path: '/bank-search', name: 'BankSearchView', component: BankSearchView },
+
+  // ✅ 커뮤니티
+  { path: '/community/articles', name: 'community', component: CommunityView },
+  { path: '/community/articles/write', name: 'articlewrite', component: CommunityWriteView, beforeEnter: requireAuth },
+  { path: '/community/articles/:id', name: 'articledetail', component: CommunityDetailView },
+
+  // ✅ 프로필 및 팔로우
+  { path: '/community/profile/:id', name: 'userprofile', component: UserProfileView },
 ]
 
 const router = createRouter({
