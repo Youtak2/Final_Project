@@ -65,7 +65,14 @@ const logout = () => {
 }
 </script>
 
-<style scoped>
+<style>
+/* ✅ scoped 제거됨 - 전역 스타일로 적용됨 */
+html, body, #app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 #app {
   display: flex;
   flex-direction: column;

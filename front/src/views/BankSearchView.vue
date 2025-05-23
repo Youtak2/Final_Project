@@ -128,19 +128,36 @@ function searchBank() {
 }
 
 onMounted(async () => {
-  const res = await fetch('/data.json')
-  mapData.value = await res.json()
-
-  const waitForKakao = () => {
-    if (window.kakao && window.kakao.maps && kakao.maps.load) {
-      kakao.maps.load(initMap)
-    } else {
-      setTimeout(waitForKakao, 100)
-    }
+  try {
+    const res = await fetch('/data.json');
+    if (!res.ok) throw new Error('Failed to fetch data.json');
+    mapData.value = await res.json();
+  } catch (e) {
+    console.error(e);
+    mapData.value = { mapInfo: [], bankInfo: [] };
   }
 
-  waitForKakao()
-})
+  const ensureKakaoMap = () => {
+    if (window.kakao && window.kakao.maps && kakao.maps.load) {
+      console.log("✅ Kakao Maps SDK 로드 성공, initMap 실행");
+      kakao.maps.load(initMap);
+    } else {
+      console.log("📌 Kakao SDK가 아직 없으므로 script 동적 추가");
+      const script = document.createElement('script');
+      script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=0af238b62ebee50a156ca780853b0f6b&libraries=services';
+      script.onload = () => {
+        console.log("✅ Kakao Maps SDK script.onload 실행");
+        kakao.maps.load(initMap);
+      };
+      document.head.appendChild(script);
+    }
+  };
+
+  ensureKakaoMap();
+});
+
+
+
 </script>
 
 <style scoped>
