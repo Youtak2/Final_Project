@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/v1/accounts/', include('accounts.urls')),                     # check-username, signup
     path('api/v1/community/',include('community.urls')),
     path('api/v1/deposit/', include('deposit.urls')),                       # 예적금 금리비교
+    path('api/v1/financial/', include('financial.urls')),                   # 관심 종목 정보 검색
 ]

@@ -8,7 +8,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
-    # Django 기본 앱
+    # 기본
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -17,22 +17,25 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    # 인증/REST 관련
-    'rest_framework',
-    'rest_framework.authtoken',
-    'corsheaders',
-
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
+    # ✅ allauth는 dj_rest_auth보다 먼저 나와야 함
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    # 그다음 dj_rest_auth
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'corsheaders',
 
     # 내 앱
     'accounts',
     'community',
     'deposit',
+    'financial',
 ]
+
 
 SITE_ID = 1  # allauth 필수
 
@@ -48,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'allauth.account.middleware.AccountMiddleware',
+    # 'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'crud.urls'
