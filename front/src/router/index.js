@@ -13,6 +13,7 @@ import CommunityWriteView from '@/views/CommunityWriteView.vue'
 import UserProfileView from '@/views/UserProfileView.vue'           // ✅ 추가
 import DepositView from '@/views/DepositView.vue'
 import FinancialView from '@/views/FinancialView.vue'
+import StockpriceView from '@/views/StockpriceView.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -42,6 +43,7 @@ const routes = [
 
   // ✅ 프로필 및 팔로우
   { path: '/community/profile/:id', name: 'userprofile', component: UserProfileView },
+  {path:'/stock',name:'stock',component:StockpriceView},
 ]
 
 const router = createRouter({
