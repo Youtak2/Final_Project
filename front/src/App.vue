@@ -12,9 +12,9 @@
         <RouterLink to="/deposit">예적금 금리 비교</RouterLink>
         <RouterLink to="/stock">현물 상품 비교</RouterLink>
         <RouterLink to="/bank-search">근처 은행 검색</RouterLink>
-        <RouterLink to="/financial">투자정보</RouterLink>
-        <RouterLink to="/lounge">종목 추천</RouterLink>
-        <RouterLink to="/notice">공지/공시</RouterLink>
+        <RouterLink to="/financial">투자 정보</RouterLink>
+        <RouterLink to="/news-summary">투자 뉴스</RouterLink>
+        <RouterLink to="/recommend">종목 추천</RouterLink>
         <RouterLink to="/community/articles">커뮤니티</RouterLink>
       </nav>
 

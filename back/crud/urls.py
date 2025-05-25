@@ -26,4 +26,6 @@ urlpatterns = [
     path('api/v1/deposit/', include('deposit.urls')),                       # 예적금 금리비교
     path('api/v1/financial/', include('financial.urls')),                   # 관심 종목 정보 검색
     path('api/v1/stock/',include('stock.urls')),
+    path('api/v1/news/', include('news.urls')),
+    path('api/v1/recommend/', include('recommend.urls')),
 ]

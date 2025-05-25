@@ -14,6 +14,8 @@ import UserProfileView from '@/views/UserProfileView.vue'           // ✅ 추�
 import DepositView from '@/views/DepositView.vue'
 import FinancialView from '@/views/FinancialView.vue'
 import StockpriceView from '@/views/StockpriceView.vue'
+import NewsSearchView from '@/views/NewsSearchView.vue'
+import RecommendView from '@/views/RecommendView.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -35,6 +37,8 @@ const routes = [
   { path: '/bank-search', name: 'BankSearchView', component: BankSearchView },
   { path: '/deposit', name: 'deposit', component: DepositView },
   { path: '/financial', name: 'financial', component: FinancialView},
+  { path: '/news-summary', name: 'news-summary', component: NewsSearchView},
+  {path:'/recommend',name:'Recommend',component:RecommendView},
 
   // ✅ 커뮤니티
   { path: '/community/articles', name: 'community', component: CommunityView },

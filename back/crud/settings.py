@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'deposit',
     'financial',
     'stock',
+    'news',
+    'recommend',
 ]
 
 
