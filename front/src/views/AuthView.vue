@@ -9,46 +9,62 @@
     <hr />
 
     <!-- 소셜 로그인 -->
-    <button class="social kakao" @click="kakaoLogin">카카오 로그인</button>
-    <button class="social naver">네이버 로그인</button>
-    <div id="google-btn" class="google-btn"></div>
+<button class="social kakao" @click="kakaoLogin">카카오 로그인</button>
+<button class="social naver" @click="naverLogin">네이버 로그인</button>
+<button class="social google" @click="googleLogin">Google 계정으로 로그인</button>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import VueJwtDecode from 'vue-jwt-decode'
 
 const router = useRouter()
 
+// ✅ 인가 코드 방식: 카카오 로그인
 const kakaoLogin = () => {
-  const REST_API_KEY = '당신의_카카오_REST_API_KEY'
+  const REST_API_KEY = '9a9661d3363caf49aa0f1613461b76e6'
   const REDIRECT_URI = 'http://localhost:5173/oauth/kakao'
-  window.location.href =
-    `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`
+
+  const kakaoAuthUrl =
+    `https://kauth.kakao.com/oauth/authorize?` +
+    `client_id=${REST_API_KEY}` +
+    `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+    `&response_type=code` +
+    `&prompt=login` // 👈 계정선택 매번 유도
+
+  // ✅ 실제 이동 추가
+  window.location.href = kakaoAuthUrl
 }
 
-const handleGoogleLogin = (res) => {
-  const user = VueJwtDecode.decode(res.credential)
-  console.log('✅ Google 로그인 완료:', user)
-  localStorage.setItem('token', 'mock-token') // 실제는 백엔드 연동 필요
-  router.push('/')
+// ✅ 기존 구글 로그인 유지
+const googleLogin = () => {
+  const clientId = '854189614623-n676v9ug587tlri6scmhmbrjss7q0vqe.apps.googleusercontent.com'
+  const redirectUri = 'http://localhost:5173/oauth/google'
+  const scope = 'openid email profile'
+
+  const googleAuthUrl =
+    `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&response_type=token&scope=${encodeURIComponent(scope)}` +
+    `&prompt=consent`
+
+  window.location.href = googleAuthUrl
+}
+const naverLogin = () => {
+  const clientId = '9FnwMn7AkGM2D9KTbEVZ' // ← 네 네이버 앱의 Client ID
+  const redirectUri = 'http://localhost:5173/oauth/naver'
+  const state = crypto.randomUUID() // CSRF 방지
+
+  const naverAuthUrl =
+    `https://nid.naver.com/oauth2.0/authorize?response_type=code` +
+    `&client_id=${clientId}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&state=${state}` +
+    `&auth_type=reauthenticate`  // ✅ 매번 계정 선택하게 함
+
+  window.location.href = naverAuthUrl
 }
 
-onMounted(() => {
-  const google = window.google
-  if (google) {
-    google.accounts.id.initialize({
-      client_id: '당신의_GOOGLE_CLIENT_ID',
-      callback: handleGoogleLogin
-    })
-    google.accounts.id.renderButton(
-      document.getElementById('google-btn'),
-      { theme: 'outline', size: 'large' }
-    )
-  }
-})
 </script>
 
 <style scoped>

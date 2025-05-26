@@ -57,7 +57,6 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import KOREAN_LABELS from '../assets/korean_labels.json'
 import tickers from '../assets/tickers.json'
-import { useUserStore } from '@/stores/user'  // 로그인 상태 확인용
 import { Bar } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -77,7 +76,6 @@ const selectedPeriod = ref('quarterly')
 const financials = ref({})
 const columns = ref([])
 const rows = ref([])
-const props = defineProps({ symbol: String })
 const isFavorite = ref(false)
 const token = localStorage.getItem('token')
 
@@ -153,11 +151,8 @@ const chartOptions = {
 }
 
 // 관심 종목 등록
-// 관심 종목 상태 체크
 onMounted(async () => {
-  const token = localStorage.getItem('token')
   if (!token || !symbol.value) return
-
   try {
     const res = await axios.get('http://127.0.0.1:8000/api/v1/accounts/favorites/', {
       headers: { Authorization: `Token ${token}` }
@@ -168,7 +163,6 @@ onMounted(async () => {
   }
 })
 
-// 관심 종목 토글
 const toggleFavorite = async () => {
   const token = localStorage.getItem('token')
   if (!token) {
@@ -179,23 +173,29 @@ const toggleFavorite = async () => {
   const headers = { Authorization: `Token ${token}` }
 
   try {
+    // 찜 상태 변경 (찜 해제 / 찜 하기)
     if (isFavorite.value) {
+      // 찜 해제
       await axios.delete('http://127.0.0.1:8000/api/v1/accounts/favorites/', {
         headers,
         data: { symbol: symbol.value }
       })
       isFavorite.value = false
     } else {
+      // 찜 하기
       await axios.post('http://127.0.0.1:8000/api/v1/accounts/favorites/', 
-        { symbol: symbol.value }, 
-        { headers })
+        { symbol: symbol.value },
+        { headers }
+      )
       isFavorite.value = true
     }
+    
+    // 찜 상태 갱신 (서버에서 찜 상태 확인)
+    await checkFavoriteStatus(symbol.value)
   } catch (err) {
     console.error('찜 처리 실패:', err)
   }
 }
-
 </script>
 
 <style scoped>

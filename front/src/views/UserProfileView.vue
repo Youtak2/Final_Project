@@ -24,6 +24,12 @@
       </li>
     </ul>
   </div>
+  <h3>👥 팔로워</h3>
+<ul>
+  <li v-for="user in followers" :key="user.id">
+    <RouterLink :to="`/community/profile/${user.id}`">{{ user.username }}</RouterLink>
+  </li>
+</ul>
 </template>
 
 <script setup>
@@ -36,6 +42,18 @@ const userId = route.params.id
 const articles = ref([])
 const comments = ref([])
 const followings = ref([])
+const followers = ref([])
+
+const fetchFollowers = async () => {
+  const res = await axios.get(`http://localhost:8000/api/v1/community/users/${userId}/followers/`)
+  followers.value = res.data
+}
+
+onMounted(async () => {
+  await fetchActivity()
+  await fetchFollowings()
+  await fetchFollowers()   // 추가
+})
 
 const fetchActivity = async () => {
   const res = await axios.get(`http://localhost:8000/api/v1/community/users/${userId}/activity/`)

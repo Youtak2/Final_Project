@@ -15,3 +15,4 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')  # ✅ 대댓글 필드 추가
+    liked_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_comments', blank=True)  # 댓글 좋아요

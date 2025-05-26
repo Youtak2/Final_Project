@@ -22,7 +22,8 @@ import FavoriteStocksView from '@/views/FavoriteStocksView.vue'
 import SimulationView from '@/views/SimulationView.vue'
 import BuyStock from '@/components/BuyStock.vue'
 import SellStock from '@/components/SellStock.vue'
-
+import GoogleCallbackView from '@/views/GoogleCallbackView.vue'
+import NaverCallback from '@/views/NaverCallback.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -69,7 +70,10 @@ const routes = [
 
   // ✅ 프로필 및 팔로우
   { path: '/community/profile/:id', name: 'userprofile', component: UserProfileView },
-
+    // ✅ 소셜 로그인 콜백
+  { path: '/oauth/kakao', name: 'kakao-callback', component: KakaoCallback },
+  { path: '/oauth/google', name: 'google-callback', component: GoogleCallbackView },
+  { path: '/oauth/naver', name: 'naver', component: NaverCallback },
 ]
 
 const router = createRouter({

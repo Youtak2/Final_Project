@@ -9,14 +9,14 @@
     <div class="tab-menu">
       <RouterLink to="/mypage">기본 정보 수정</RouterLink>
       <RouterLink to="/mypage/portfolio">포트폴리오 수정</RouterLink>
-      <RouterLink to="/mypage/recommend">상품 추천 받기</RouterLink>
+      <RouterLink to="/mypage/recommend">추천하는 상품목록</RouterLink>
       <RouterLink to="/mypage/bookmarks">찜한 상품 보기</RouterLink>
       <RouterLink to="/mypage/favorites">관심 종목 보기</RouterLink>
     </div>
 
     <!-- 기본 정보 카드 -->
     <div class="profile-card">
-      <h3>기본 정보 수정</h3>찌
+      <h3>기본 정보 수정</h3>
       <div v-for="(item, key) in userInfo" :key="key" class="info-row">
         <label>{{ key }}</label>
         <input
@@ -32,7 +32,7 @@
           {{ editable[key] ? '저장' : '수정하기' }}
         </button>
         <!-- 보유자산 VIP 뱃지 -->
-        <span v-if="key === '보유자산'" class="vip-badge">{{ vipLevel }}</span>
+        <span v-if="key === '투자금액'" class="vip-badge">{{ vipLevel }}</span>
       </div>
     </div>
   </div>
@@ -47,14 +47,14 @@ const username = ref('')
 const userInfo = reactive({})
 const editable = reactive({})
 
-// VIP 등급 계산
+// VIP 등급 계산: 투자금액(investment_amount) 기준
 const vipLevel = computed(() => {
-  const raw = userInfo['보유자산']?.toString().replace(/[^0-9]/g, '')
-  const asset = Number(raw)
-  if (isNaN(asset)) return ''
-  if (asset >= 100000000000) return '🔥 VVVVIP'
-  if (asset >= 10000000000) return '👑 VVIP'
-  if (asset >= 100000000) return '💎 VIP'
+  const raw = userInfo['투자금액']?.toString().replace(/[^0-9]/g, '')
+  const investAmt = Number(raw)
+  if (isNaN(investAmt)) return ''
+  if (investAmt >= 10000000000) return '🔥 VVVVIP'  // 100억 이상
+  if (investAmt >= 1000000000) return '👑 VVIP'    // 10억 이상
+  if (investAmt >= 100000000) return '💎 VIP'      // 1억 이상
   return ''
 })
 
@@ -73,13 +73,14 @@ onMounted(async () => {
     userId.value = user.pk || user.id
     username.value = user.username
 
-Object.assign(userInfo, {
-  ID: user.username,
-  Email: user.email || '',
-  보유자산: user.asset ?? 0,
-  연봉: user.salary ?? '',
-  나이: user.age ?? ''
-})
+    Object.assign(userInfo, {
+      ID: user.username,
+      Email: user.email || '',
+      보유자산: user.asset ?? 0,
+      연봉: user.salary ?? '',
+      나이: user.age ?? '',
+      투자금액: user.investment_amount ?? 0   // 투자금액 필드 추가, 백엔드에서 내려줘야 함
+    })
 
     Object.keys(userInfo).forEach(key => {
       editable[key] = false
@@ -113,7 +114,8 @@ async function saveField(key) {
     'Email': 'email',
     '보유자산': 'asset',
     '연봉': 'salary',
-    '나이': 'age'
+    '나이': 'age',
+    '투자금액': 'investment_amount'  // 서버에 맞게 필드명 조정 필요
   }
 
   const field = payloadMap[key]
@@ -137,16 +139,6 @@ async function saveField(key) {
     console.error(`${key} 저장 실패`, err.response?.data || err)
   }
 }
-
-// 찜 목록
-const loadBookmarks = async () => {
-  const token = localStorage.getItem('token')
-  const res = await axios.get('http://127.0.0.1:8000/api/v1/deposit/bookmark/list/', {
-    headers: { Authorization: `Token ${token}` }
-  })
-  bookmarks.value = res.data
-}
-
 </script>
 
 <style scoped>

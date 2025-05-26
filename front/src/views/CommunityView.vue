@@ -2,11 +2,13 @@
   <div>
     <h2>📚 게시글 목록</h2>
     <RouterLink to="/community/articles/write">✍️ 글쓰기</RouterLink>
-    <ul>
-      <li v-for="article in articles" :key="article.id">
-        <RouterLink :to="`/community/articles/${article.id}`">{{ article.title }}</RouterLink>
-      </li>
-    </ul>
+<ul>
+  <li v-for="article in articles" :key="article.id">
+    <RouterLink :to="`/community/articles/${article.id}`">{{ article.title }}</RouterLink>
+    <span>👍 {{ article.liked_users.length }}</span>
+    <span v-if="article.liked_users.length >= 30" style="color: red; font-weight: bold;">🔥 핫</span>
+  </li>
+</ul>
   </div>
 </template>
 

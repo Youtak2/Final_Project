@@ -129,3 +129,26 @@ def user_articles_comments(request, user_id):
         'articles': ArticleSerializer(articles, many=True).data,
         'comments': CommentSerializer(comments, many=True).data,
     })
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def toggle_comment_like(request, comment_id):
+    try:
+        comment = Comment.objects.get(pk=comment_id)
+        user = request.user
+        if user in comment.liked_users.all():
+            comment.liked_users.remove(user)
+            return Response({'detail': '댓글 좋아요 취소'})
+        else:
+            comment.liked_users.add(user)
+            return Response({'detail': '댓글 좋아요 완료'})
+    except Comment.DoesNotExist:
+        return Response({'error': '댓글이 존재하지 않습니다.'}, status=404)
+    
+@api_view(['GET'])
+@permission_classes([permissions.AllowAny])
+def get_followers(request, user_id):
+    user = User.objects.get(pk=user_id)
+    followers = user.followers.all()
+    data = [{'id': u.id, 'username': u.username} for u in followers]
+    return Response(data)

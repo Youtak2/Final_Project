@@ -28,6 +28,9 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'corsheaders',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.naver', #네이버
 
     # 내 앱
     'accounts',
@@ -147,3 +150,25 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 FINLIFE_API_KEY = env("FINLIFE_API_KEY")
+
+SOCIALACCOUNT_PROVIDERS = {
+    'kakao': {
+        'APP': {
+            'client_id': '9a9661d3363caf49aa0f1613461b76e6',  # REST API 키
+            'secret': '',  # 보통 빈값 또는 앱 시크릿 넣어도 됨
+            'key': '',
+        },
+        'SCOPE': ['profile_nickname', 'account_email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    },
+    'google': {
+        'APP': {
+            'client_id': '854189614623-n676v9ug587tlri6scmhmbrjss7q0vqe.apps.googleusercontent.com',
+            'secret': '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',  # 실제 secret 값 확인 필요
+            'key': ''
+        },
+        'SCOPE': ['openid', 'profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'offline'},
+        'OAUTH_PKCE_ENABLED': True,  # PKCE 활성화 (보안성 강화)
+    }
+}

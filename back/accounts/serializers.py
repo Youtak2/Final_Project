@@ -8,7 +8,10 @@ User = get_user_model()
 class CustomUserDetailsSerializer(UserDetailsSerializer):
     class Meta:
         model = User
-        fields = ('pk', 'username', 'email', 'asset', 'salary', 'age','saving_type', 'invest_type', 'main_bank')  # 👈 이거 포함되어야 함
+        fields = (
+            'pk', 'username', 'email', 'asset', 'salary', 'age',
+            'saving_type', 'invest_type', 'main_bank', 'investment_amount'  # <== 추가
+        )
 
 class FavoriteStockSerializer(serializers.ModelSerializer):
     class Meta:

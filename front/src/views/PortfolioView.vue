@@ -49,12 +49,16 @@
 
 <script setup>
 import { reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
+
+const router = useRouter()
 
 const portfolio = reactive({
   saving_type: '',
   invest_type: '',
-  main_bank: ''
+  main_bank: '',
+  investment_amount: 0,
 })
 
 const savingTypes = ['소극적', '중립적', '적극적']
@@ -85,6 +89,7 @@ async function savePortfolio() {
       headers: { Authorization: `Token ${token}` }
     })
     alert('포트폴리오 저장 완료!')
+    router.push('/mypage')
   } catch (err) {
     console.error('저장 실패:', err)
     alert('저장 실패!')
@@ -138,10 +143,12 @@ onMounted(fetchPortfolio)
   cursor: pointer;
 }
 
-select {
+select, input[type="number"] {
+  width: 100%;
   padding: 0.6rem;
   border-radius: 6px;
   border: 1px solid #ccc;
   margin-top: 0.5rem;
+  box-sizing: border-box;
 }
 </style>

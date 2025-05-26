@@ -18,33 +18,32 @@
         <RouterLink v-if="isLogin" to="/simulation">가상 포트폴리오</RouterLink>
       </nav>
 
-      <div class="nav-icons">
+     <div class="nav-icons">
         <input type="text" placeholder="검색..." class="search-input" />
         <span class="icon">🔍</span>
 
         <!-- 로그인 상태별 분기 -->
-        <template v-if="isLogin">
+        <div v-if="auth.isLogin">
           <RouterLink to="/mypage" class="mypage-link">마이페이지</RouterLink>
           <button @click="logout" class="logout-btn">로그아웃</button>
-        </template>
-        <template v-else>
+        </div>
+        <div v-else>
           <RouterLink to="/auth" class="mypage-link">로그인</RouterLink>
-        </template>
+        </div>
 
-<div
-  class="dropdown-wrapper"
-  @mouseover="showDropdown = true"
-  @mouseleave="showDropdown = false"
->
-  <span class="icon">≡</span>
-  <div class="dropdown-menu" v-if="showDropdown">
-    <RouterLink to="/notice">공지사항</RouterLink>
-    <RouterLink to="/terms">이용약관</RouterLink>
-    <RouterLink to="/community">커뮤니티</RouterLink>
-    <RouterLink to="/faq">자주 묻는 질문</RouterLink>
-  </div>
-</div>
-
+        <div
+          class="dropdown-wrapper"
+          @mouseover="showDropdown = true"
+          @mouseleave="showDropdown = false"
+        >
+          <span class="icon">≡</span>
+          <div class="dropdown-menu" v-if="showDropdown">
+            <RouterLink to="/notice">공지사항</RouterLink>
+            <RouterLink to="/terms">이용약관</RouterLink>
+            <RouterLink to="/community">커뮤니티</RouterLink>
+            <RouterLink to="/faq">자주 묻는 질문</RouterLink>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -63,25 +62,30 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const router = useRouter()
 const showDropdown = ref(false)
 
-const isLogin = ref(false)
-const router = useRouter()
-
+// ✅ 앱 로드 시 로그인 상태 복원
 onMounted(() => {
-  isLogin.value = !!localStorage.getItem('token')
+  if (auth.token && !auth.user) {
+    auth.fetchUser()
+  }
 })
 
+// ✅ 로그아웃 함수 수정
 const logout = () => {
-  localStorage.removeItem('token')
-  isLogin.value = false
+  auth.logout()  // clearToken → logout 으로 변경
   alert('로그아웃 되었습니다.')
   router.push('/')
 }
 </script>
 
+
+
 <style>
-/* ✅ scoped 제거됨 - 전역 스타일로 적용됨 */
 html, body, #app {
   height: 100%;
   margin: 0;
@@ -174,6 +178,7 @@ main {
   cursor: pointer;
   text-decoration: underline;
 }
+
 .dropdown-wrapper {
   position: relative;
 }

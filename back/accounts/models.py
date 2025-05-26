@@ -5,12 +5,14 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 
 class CustomUser(AbstractUser):
-    asset = models.PositiveIntegerField(default=0)
+    asset = models.PositiveIntegerField(default=0)        # 기존 보유 자산
     salary = models.PositiveIntegerField(default=0)
     age = models.PositiveIntegerField(default=0)
     saving_type = models.CharField(max_length=20, blank=True)
     invest_type = models.CharField(max_length=20, blank=True)
     main_bank = models.CharField(max_length=50, blank=True)
+    
+    investment_amount = models.PositiveIntegerField(default=0)  # 신규 투자 금액 필드 추가
 
     followings = models.ManyToManyField(
         'self',

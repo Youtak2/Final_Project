@@ -23,6 +23,13 @@
     <ul>
       <li v-for="comment in comments" :key="comment.id">
         🗣 {{ comment.user.username }}: {{ comment.content }}
+
+        <button v-if="token" @click="toggleCommentLike(comment.id)">
+          ❤️ 댓글 좋아요 ({{ comment.liked_count || 0 }})
+          <span v-if="comment.is_liked">💖</span>
+          <span v-else>🤍</span>
+        </button>
+
         <button @click="setReplyTarget(comment.id)">답글</button>
 
         <!-- 대댓글 -->
@@ -136,6 +143,17 @@ const toggleLike = async () => {
     headers: { Authorization: `Token ${token}` }
   })
   await fetchArticle()
+}
+
+const toggleCommentLike = async (commentId) => {
+  try {
+    await axios.post(`http://localhost:8000/api/v1/community/comments/${commentId}/like/`, {}, {
+      headers: { Authorization: `Token ${token}` }
+    })
+    await fetchComments()
+  } catch (e) {
+    console.error('댓글 좋아요 실패:', e)
+  }
 }
 
 const toggleFollow = async (userId) => {
