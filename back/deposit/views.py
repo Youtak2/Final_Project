@@ -31,7 +31,7 @@ class DepositProductListView(APIView):
 
         # 정제된 응답 형식
         grouped = defaultdict(lambda: {
-            "disclosure_month": "2024년 11월",
+            "disclosure_month": "2025년 5월",
             "bank_name": "",
             "name": "",
             "rate_6": None,

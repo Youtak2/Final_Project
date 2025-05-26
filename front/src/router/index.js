@@ -18,6 +18,7 @@ import NewsSearchView from '@/views/NewsSearchView.vue'
 import RecommendView from '@/views/RecommendView.vue'
 import BookmarkListView from '@/views/BookmarkListView.vue'
 import DepositDetailView from '@/views/DepositDetailView.vue'
+import FavoriteStocksView from '@/views/FavoriteStocksView.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -39,6 +40,7 @@ const routes = [
   { path: '/mypage', name: 'mypage', component: MyPageView, beforeEnter: requireAuth },
   { path: '/mypage/portfolio', name: 'portfolio', component: PortfolioView, beforeEnter: requireAuth },
   { path: '/mypage/bookmarks', name: 'BookmarkList', component: BookmarkListView, beforeEnter: requireAuth },
+  { path: '/mypage/favorites', name: 'FavoriteStocksView', component: FavoriteStocksView, beforeEnter: requireAuth},
 
   { path: '/bank-search', name: 'BankSearchView', component: BankSearchView },
 

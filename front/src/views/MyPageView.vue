@@ -11,11 +11,12 @@
       <RouterLink to="/mypage/portfolio">포트폴리오 수정</RouterLink>
       <RouterLink to="/mypage/recommend">상품 추천 받기</RouterLink>
       <RouterLink to="/mypage/bookmarks">찜한 상품 보기</RouterLink>
+      <RouterLink to="/mypage/favorites">관심 종목 보기</RouterLink>
     </div>
 
     <!-- 기본 정보 카드 -->
     <div class="profile-card">
-      <h3>기본 정보 수정</h3>
+      <h3>기본 정보 수정</h3>찌
       <div v-for="(item, key) in userInfo" :key="key" class="info-row">
         <label>{{ key }}</label>
         <input

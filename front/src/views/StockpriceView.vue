@@ -15,6 +15,17 @@
       <button @click="resetZoom">줌 초기화</button>
     </div>
 
+    <!-- 찜하기 -->
+    <div v-if="chartData" style="margin-bottom: 10px;">
+      <button
+        @click="toggleFavorite"
+        :style="{ backgroundColor: isFavorite ? '#ff6b81' : '#f1f2f6' }"
+      >
+        {{ isFavorite ? '💖 찜 해제' : '🤍 찜하기' }}
+      </button>
+    </div>
+
+
     <!-- 차트 -->
     <div style="width: 100%; max-width: 1200px; height: 600px;">
       <Line
@@ -64,6 +75,9 @@ const chartData = ref(null)
 const selectedRange = ref('1w')
 const keyword = ref('apple')
 const lastFetchedData = ref([])
+const isFavorite = ref(false)
+const selectedSymbol = ref('')
+
 
 const options = [
   { label: '1일', value: '1d' },
@@ -114,7 +128,7 @@ const fetchOhlcv = async () => {
     alert('❌ 해당 종목명을 찾을 수 없습니다.')
     return
   }
-
+  selectedSymbol.value = ticker
   try {
     const res = await axios.get('http://localhost:8000/api/v1/stock/', {
       params: {
@@ -140,6 +154,8 @@ const fetchOhlcv = async () => {
         }
       ]
     }
+    await checkFavoriteStatus(ticker)
+
   } catch (err) {
     console.error('📉 OHLCV 조회 실패:', err)
   }
@@ -169,6 +185,50 @@ const resetZoom = () => {
     chart.resetZoom()
   }
 }
+
+// 관심 종목 추가
+const checkFavoriteStatus = async (ticker) => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      isFavorite.value = false
+      return
+    }
+
+    try {
+      const res = await axios.get('http://127.0.0.1:8000/api/v1/accounts/favorites/', {
+        headers: { Authorization: `Token ${token}` }
+      })
+      isFavorite.value = res.data.some(item => item.symbol === ticker)
+    } catch (err) {
+      console.error('관심 종목 조회 실패:', err)
+    }
+  }
+
+const toggleFavorite = async () => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    alert("로그인이 필요합니다.")
+    return
+  }
+
+  const headers = { Authorization: `Token ${token}` }
+
+  try {
+    if (isFavorite.value) {
+      await axios.delete('http://127.0.0.1:8000/api/v1/accounts/favorites/', {
+        headers,
+        data: { symbol: keyword.value.toUpperCase() }
+      })
+      isFavorite.value = false
+    } else {
+      await axios.post('/api/v1/accounts/favorites/', { symbol: selectedSymbol.value }, { headers })
+      isFavorite.value = true
+    }
+  } catch (err) {
+    console.error('찜 처리 실패:', err)
+  }
+}
+
 </script>
 
 <style scoped>

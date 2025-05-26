@@ -9,6 +9,7 @@ from .models import PriceData
 from .serializers import PriceDataSerializer
 from datetime import timedelta, date
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])  # 로그인 없이 누구나 접근 가능
 def stock_price_view(request):
@@ -43,3 +44,4 @@ def stock_price_view(request):
 
     serializer = PriceDataSerializer(queryset, many=True)
     return Response(serializer.data)
+

@@ -17,6 +17,9 @@
 
     <div v-if="results.length">
       <h3>요약 결과</h3>
+
+      <FavoriteButton :symbol="selectedSymbol" />
+
       <ul>
         <li v-for="r in results" :key="r.link">
           <strong>{{ r.title }}</strong> - {{ r.impact }}<br />
@@ -38,6 +41,8 @@ import { ref, nextTick, computed } from 'vue'
 import axios from 'axios'
 import Chart from 'chart.js/auto'
 import tickers from '../assets/tickers.json'
+import FavoriteButton from '../components/FavoriteButton.vue'
+
 
 const symbolInput = ref('')
 const selectedSymbol = ref('')
@@ -110,6 +115,13 @@ const search = async () => {
 
   loading.value = false
 }
+
+if (!selectedSymbol.value) {
+  const match = symbolInput.value.match(/\((.*?)\)$/)
+  selectedSymbol.value = match ? match[1] : symbolInput.value.toUpperCase()
+}
+
+
 </script>
 
 <style scoped>

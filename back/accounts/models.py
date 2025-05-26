@@ -2,6 +2,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
+from django.contrib.auth import get_user_model
+
 class CustomUser(AbstractUser):
     asset = models.PositiveIntegerField(default=0)
     salary = models.PositiveIntegerField(default=0)
@@ -17,3 +19,13 @@ class CustomUser(AbstractUser):
         related_query_name='follower',
         blank=True
     )
+
+User = get_user_model()
+
+class FavoriteStock(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorite_stocks')
+    symbol = models.CharField(max_length=10)  # 예: AAPL
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'symbol')

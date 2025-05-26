@@ -5,8 +5,9 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model, authenticate
 from django.shortcuts import get_object_or_404
+from .models import FavoriteStock
 
-from .serializers import CustomUserDetailsSerializer
+from .serializers import CustomUserDetailsSerializer, FavoriteStockSerializer
 
 
 User = get_user_model()
@@ -100,3 +101,31 @@ def update_portfolio(request):
             return Response({'message': '포트폴리오 업데이트 완료'})
         print('❌ serializer error:', serializer.errors)
         return Response(serializer.errors, status=400)
+    
+
+# 관심 종목 등록
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def favorite_stocks(request):
+    user = request.user
+
+    if request.method == 'GET':
+        favorites = FavoriteStock.objects.filter(user=user)
+        serializer = FavoriteStockSerializer(favorites, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        symbol = request.data.get('symbol')
+        if not symbol:
+            return Response({'error': 'symbol is required'}, status=400)
+
+        fav, created = FavoriteStock.objects.get_or_create(user=user, symbol=symbol)
+        return Response({'message': '관심 종목 등록 완료' if created else '이미 등록됨'})
+
+    elif request.method == 'DELETE':
+        symbol = request.data.get('symbol')
+        FavoriteStock.objects.filter(user=user, symbol=symbol).delete()
+        return Response({'message': '삭제 완료'})
+
+    return Response({'error': '잘못된 요청입니다.'}, status=405)
+

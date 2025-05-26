@@ -11,6 +11,7 @@
     <table v-if="stocks.length && !isLoading">
       <thead>
         <tr>
+          <th>-</th>
           <th>티커</th>
           <th>PER</th>
           <th>ROE</th>
@@ -20,6 +21,7 @@
       </thead>
       <tbody>
         <tr v-for="stock in stocks" :key="stock.symbol">
+          <td><FavoriteButton :symbol="stock.symbol" /></td>
           <td>{{ stock.symbol }}</td>
           <td>{{ formatNumber(stock.PER) }}</td>
           <td>{{ formatPercent(stock.ROE) }}</td>
@@ -38,6 +40,7 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import FavoriteButton from '../components/FavoriteButton.vue'
 
 const stocks = ref([])
 const fetchedOnce = ref(false)
