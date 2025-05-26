@@ -27,6 +27,10 @@
         </tbody>
       </table>
       <p v-else>보유한 종목이 없습니다.</p>
+
+      <div v-if="portfolio.holdings && portfolio.holdings.length > 0" style="max-width: 500px; margin-top: 2rem;">
+        <PieChart :holdings="portfolio.holdings" />
+      </div>
     </section>
 
     <section v-if="tab === 'buy'">
@@ -45,6 +49,8 @@ import api from '@/utils/api'
 import { useAuthStore } from '@/stores/auth'
 import BuyStock from '@/components/BuyStock.vue'
 import SellStock from '@/components/SellStock.vue'
+import PieChart from '@/components/PieChart.vue'
+
 
 const portfolio = ref({})
 const auth = useAuthStore()
