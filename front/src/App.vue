@@ -16,6 +16,7 @@
         <RouterLink to="/news-summary">투자 뉴스</RouterLink>
         <RouterLink to="/recommend">종목 추천</RouterLink>
         <RouterLink to="/community/articles">커뮤니티</RouterLink>
+        <RouterLink v-if="isLogin" to="/simulation">가상 포트폴리오</RouterLink>
       </nav>
 
       <div class="nav-icons">

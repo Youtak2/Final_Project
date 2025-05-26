@@ -19,6 +19,10 @@ import RecommendView from '@/views/RecommendView.vue'
 import BookmarkListView from '@/views/BookmarkListView.vue'
 import DepositDetailView from '@/views/DepositDetailView.vue'
 import FavoriteStocksView from '@/views/FavoriteStocksView.vue'
+import SimulationView from '@/views/SimulationView.vue'
+import BuyStock from '@/components/BuyStock.vue'
+import SellStock from '@/components/SellStock.vue'
+
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -50,8 +54,13 @@ const routes = [
 
   { path: '/financial', name: 'financial', component: FinancialView },
   { path: '/news-summary', name: 'news-summary', component: NewsSearchView },
-  { path:'/recommend',name:'Recommend',component:RecommendView },
-  { path:'/stock',name:'stock',component:StockpriceView },
+  { path:'/recommend', name:'Recommend', component: RecommendView },
+  { path:'/stock', name:'stock', component: StockpriceView },
+
+  // 시뮬레이션
+  { path: '/simulation', name: 'Simulation', component: SimulationView, meta: { requiresAuth: true },},
+  { path: '/buy', name: 'BuyStock', component: BuyStock, meta: { requiresAuth: true }, },
+  { path: '/sell', name: 'SellStock', component: SellStock, meta: { requiresAuth: true }, },
 
   // ✅ 커뮤니티
   { path: '/community/articles', name: 'community', component: CommunityView },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input v-model="symbolInput" placeholder="종목명 또는 티커 입력" />
+    <input v-model="symbolInput" placeholder="종목명 입력 (ex: apple, AAPL)" />
     <ul v-if="symbolInput && filteredTickers.length">
       <li
         v-for="item in filteredTickers"
