@@ -10,6 +10,7 @@
       <RouterLink to="/mypage">기본 정보 수정</RouterLink>
       <RouterLink to="/mypage/portfolio">포트폴리오 수정</RouterLink>
       <RouterLink to="/mypage/recommend">상품 추천 받기</RouterLink>
+      <RouterLink to="/mypage/bookmarks">찜한 상품 보기</RouterLink>
     </div>
 
     <!-- 기본 정보 카드 -->
@@ -135,6 +136,16 @@ async function saveField(key) {
     console.error(`${key} 저장 실패`, err.response?.data || err)
   }
 }
+
+// 찜 목록
+const loadBookmarks = async () => {
+  const token = localStorage.getItem('token')
+  const res = await axios.get('http://127.0.0.1:8000/api/v1/deposit/bookmark/list/', {
+    headers: { Authorization: `Token ${token}` }
+  })
+  bookmarks.value = res.data
+}
+
 </script>
 
 <style scoped>

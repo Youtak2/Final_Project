@@ -16,6 +16,7 @@ import FinancialView from '@/views/FinancialView.vue'
 import StockpriceView from '@/views/StockpriceView.vue'
 import NewsSearchView from '@/views/NewsSearchView.vue'
 import RecommendView from '@/views/RecommendView.vue'
+import BookmarkListView from '@/views/BookmarkListView.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -32,13 +33,18 @@ const routes = [
   { path: '/auth', name: 'Auth', component: AuthView },
   { path: '/signup', name: 'Signup', component: SignupView },
   { path: '/login', name: 'login', component: SignInView },
+
+  // 마이페이지
   { path: '/mypage', name: 'mypage', component: MyPageView, beforeEnter: requireAuth },
   { path: '/mypage/portfolio', name: 'portfolio', component: PortfolioView, beforeEnter: requireAuth },
+  { path: '/mypage/bookmarks', name: 'BookmarkList', component: BookmarkListView, beforeEnter: requireAuth },
+
   { path: '/bank-search', name: 'BankSearchView', component: BankSearchView },
   { path: '/deposit', name: 'deposit', component: DepositView },
-  { path: '/financial', name: 'financial', component: FinancialView},
-  { path: '/news-summary', name: 'news-summary', component: NewsSearchView},
-  {path:'/recommend',name:'Recommend',component:RecommendView},
+  { path: '/financial', name: 'financial', component: FinancialView },
+  { path: '/news-summary', name: 'news-summary', component: NewsSearchView },
+  { path:'/recommend',name:'Recommend',component:RecommendView },
+  { path:'/stock',name:'stock',component:StockpriceView },
 
   // ✅ 커뮤니티
   { path: '/community/articles', name: 'community', component: CommunityView },
@@ -47,7 +53,7 @@ const routes = [
 
   // ✅ 프로필 및 팔로우
   { path: '/community/profile/:id', name: 'userprofile', component: UserProfileView },
-  {path:'/stock',name:'stock',component:StockpriceView},
+
 ]
 
 const router = createRouter({

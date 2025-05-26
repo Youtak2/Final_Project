@@ -43,7 +43,13 @@
           <td>{{ item.rate_12 ?? '-' }}</td>
           <td>{{ item.rate_24 ?? '-' }}</td>
           <td>{{ item.rate_36 ?? '-' }}</td>
-        </tr>
+          <td>
+            <button @click="toggleBookmark(item.id)">
+              <span v-if="bookmarkedIds && bookmarkedIds.includes(item.id)">💖</span>
+              <span v-else>🤍</span>
+            </button>
+          </td>
+        </tr>        
       </tbody>
     </table>
 
@@ -116,6 +122,57 @@ const paginatedItems = computed(() => {
 const totalPages = computed(() => Math.ceil(sortedItems.value.length / itemsPerPage.value))
 
 onMounted(fetchProducts)
+
+
+
+const bookmarkedIds = ref([])
+
+const loadBookmarks = async () => {
+  const token = localStorage.getItem('token')
+  if (!token) return
+
+  const res = await axios.get('http://127.0.0.1:8000/api/v1/deposit/bookmark/list/', {
+    headers: { Authorization: `Token ${token}` }
+  })
+  bookmarkedIds.value = res.data.map(b => b.product)  // ✅ id만 추출
+}
+
+onMounted(() => {
+  fetchProducts()
+  loadBookmarks()
+})
+
+const toggleBookmark = async (productId) => {
+  console.log("📌 Bookmark 요청할 productId:", productId)
+  const token = localStorage.getItem('token')
+
+  if (!token) {
+    alert('로그인이 필요합니다.')
+    return
+  }
+
+  try {
+    const res = await axios.post('http://127.0.0.1:8000/api/v1/deposit/bookmark/', {
+      product_id: productId
+    }, {
+      headers: {
+        Authorization: `Token ${token}`
+      }
+    })
+
+    if (res.data.bookmarked) {
+      bookmarkedIds.value.push(productId)
+      alert('찜 완료!')
+    } else {
+      bookmarkedIds.value = bookmarkedIds.value.filter(id => id !== productId)
+      alert('찜 해제!')
+    }
+  } catch (err) {
+    alert('요청 실패: 로그인 또는 서버 문제입니다.')
+  }
+}
+
+
 </script>
 
 <style scoped>
