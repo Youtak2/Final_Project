@@ -8,6 +8,10 @@ class DepositProduct(models.Model):
     save_term = models.IntegerField()               # 6 / 12 / 24 / 36 (개월)
     rate = models.FloatField()
     fin_prdt_cd = models.CharField(max_length=30, unique=True)
+    description = models.TextField(blank=True, null=True)   # 상품 상세 설명 
+    join_url = models.URLField(blank=True, null=True)   # 가입 링크
+    join_way = models.TextField(blank=True, null=True)  # 가입 경로
+    join_member = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

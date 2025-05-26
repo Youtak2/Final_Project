@@ -61,11 +61,17 @@ const selectTicker = (item) => {
 
 const renderChart = () => {
   const counts = { 긍정: 0, 부정: 0, 중립: 0, 기타: 0 }
+
   for (const r of results.value) {
     const key = r.impact?.trim()
-    if (key && counts.hasOwnProperty(key)) counts[key]++
-    else counts.기타++
-  }
+    console.log("감성 키워드:", key)
+
+    if (key && counts.hasOwnProperty(key)) {
+      counts[key]++
+    } else {
+      counts.기타++
+    }
+  } // ✅ ← for 루프 닫는 중괄호
 
   const ctx = document.getElementById('sentimentChart')
   if (chartInstance) chartInstance.destroy()
@@ -83,6 +89,7 @@ const renderChart = () => {
     }
   })
 }
+
 
 const search = async () => {
   if (!selectedSymbol.value) return alert('종목을 선택해주세요')

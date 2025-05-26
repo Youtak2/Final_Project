@@ -32,13 +32,14 @@
           <th @click="sortKey = 'rate_12'">12개월 금리</th>
           <th @click="sortKey = 'rate_24'">24개월 금리</th>
           <th @click="sortKey = 'rate_36'">36개월 금리</th>
+          <th>찜하기</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in paginatedItems" :key="item.name + item.bank_name">
           <td>{{ item.disclosure_month }}</td>
           <td>{{ item.bank_name }}</td>
-          <td>{{ item.name }}</td>
+          <td><RouterLink :to="`/deposit/${item.id}`">{{ item.name }}</RouterLink></td>
           <td>{{ item.rate_6 ?? '-' }}</td>
           <td>{{ item.rate_12 ?? '-' }}</td>
           <td>{{ item.rate_24 ?? '-' }}</td>

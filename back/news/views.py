@@ -2,6 +2,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 import google.generativeai as genai
+import re
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -86,19 +87,26 @@ def summarize_news(request):
 \"\"\"
 
 1. 위 내용을 한국어로 자연스럽게 번역하세요.
-2. 이 뉴스가 투자자에게 긍정적, 부정적, 중립적 중 무엇인지 감성 분석 결과를 명확히 말해주세요.
+2. 이 뉴스가 투자자에게 긍정, 부정, 중립 중 하나로 감성 분석 결과를 명확히 말해주세요.
 """
             response = model.generate_content(prompt)
             content = response.text.strip()
             print("🧠 Gemini 응답 결과:", content)
 
-            if "2." not in content:
-                article.translated_summary = content
-                article.impact = "분석 실패"
+            # 감성 분석 결과 추출
+            match = re.search(r"(긍정|부정|중립)", content)
+            if match:
+                article.impact = match.group(1)
             else:
-                translated, impact = content.split("2.")
+                article.impact = "기타"
+
+            # 번역된 요약 추출
+            if "1." in content and "2." in content:
+                translated, _ = content.split("2.", 1)
                 article.translated_summary = translated.replace("1.", "").strip()
-                article.impact = impact.strip()
+            else:
+                article.translated_summary = content
+                article.impact = "기타"
 
             article.save()
             count += 1

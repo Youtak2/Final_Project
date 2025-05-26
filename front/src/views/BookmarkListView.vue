@@ -11,12 +11,13 @@
           <th>12개월</th>
           <th>24개월</th>
           <th>36개월</th>
+          <th>-</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in groupedList" :key="item.name + item.bank_name">
           <td>{{ item.bank_name }}</td>
-          <td>{{ item.name }}</td>
+          <td><RouterLink :to="`/deposit/${item.id}`">{{ item.name }}</RouterLink></td>
           <td>{{ item.rate_6 ?? '-' }}</td>
           <td>{{ item.rate_12 ?? '-' }}</td>
           <td>{{ item.rate_24 ?? '-' }}</td>
@@ -70,6 +71,7 @@ const fetchBookmarks = async () => {
 
     if (!groupedProducts.value[key]) {
       groupedProducts.value[key] = {
+        id: p.id,
         bank_name: p.bank_name,
         name: p.name,
         rate_6: null,

@@ -26,6 +26,10 @@ class Command(BaseCommand):
                 fin_prdt_cd = base['fin_prdt_cd']
                 bank_name = base['kor_co_nm']
                 name = base['fin_prdt_nm']
+                description = base.get('etc_note') or '-'  # 상품 설명
+                join_url = base.get('join_url') or ''     # 가입 URL은 다른 필드일 수 있음
+                join_way = base.get('join_way', '')
+                join_member = base.get('join_member', '')
 
                 for option in filter(lambda x: x['fin_prdt_cd'] == fin_prdt_cd, option_list):
                     try:
@@ -41,7 +45,11 @@ class Command(BaseCommand):
                                 'bank_name': bank_name,
                                 'product_type': product_type,
                                 'save_term': save_term,
-                                'rate': rate
+                                'rate': rate,
+                                'description': description,
+                                'join_url': join_url,
+                                'join_way': join_way,
+                                'join_member': join_member,
                             }
                         )
 

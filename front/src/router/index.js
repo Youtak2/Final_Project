@@ -10,13 +10,14 @@ import BankSearchView from '@/views/BankSearchView.vue'
 import CommunityView from '@/views/CommunityView.vue'
 import CommunityDetailView from '@/views/CommunityDetailView.vue'
 import CommunityWriteView from '@/views/CommunityWriteView.vue'
-import UserProfileView from '@/views/UserProfileView.vue'           // ✅ 추가
+import UserProfileView from '@/views/UserProfileView.vue' 
 import DepositView from '@/views/DepositView.vue'
 import FinancialView from '@/views/FinancialView.vue'
 import StockpriceView from '@/views/StockpriceView.vue'
 import NewsSearchView from '@/views/NewsSearchView.vue'
 import RecommendView from '@/views/RecommendView.vue'
 import BookmarkListView from '@/views/BookmarkListView.vue'
+import DepositDetailView from '@/views/DepositDetailView.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')
@@ -40,7 +41,11 @@ const routes = [
   { path: '/mypage/bookmarks', name: 'BookmarkList', component: BookmarkListView, beforeEnter: requireAuth },
 
   { path: '/bank-search', name: 'BankSearchView', component: BankSearchView },
+
+  // 예적금 비교 페이지 
   { path: '/deposit', name: 'deposit', component: DepositView },
+  { path: '/deposit/:id', name: 'Depositdetail', component: DepositDetailView},
+
   { path: '/financial', name: 'financial', component: FinancialView },
   { path: '/news-summary', name: 'news-summary', component: NewsSearchView },
   { path:'/recommend',name:'Recommend',component:RecommendView },

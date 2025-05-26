@@ -8,6 +8,7 @@ from rest_framework import status
 from .serializers import BookmarkSerializer, DepositProductSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import RetrieveAPIView
 
 class DepositProductListView(APIView):
     permission_classes = [AllowAny]
@@ -90,3 +91,9 @@ def related_products(request, product_id):
         return Response(serializer.data)
     except DepositProduct.DoesNotExist:
         return Response({'error': 'Product not found'}, status=404)
+    
+
+
+class DepositProductDetailView(RetrieveAPIView):
+    queryset = DepositProduct.objects.all()
+    serializer_class = DepositProductSerializer
