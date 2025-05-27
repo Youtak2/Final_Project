@@ -163,6 +163,21 @@ onMounted(async () => {
   }
 })
 
+import { watch } from 'vue'
+
+// 종목 변경될 때마다 찜 상태 갱신
+watch(symbol, async (newSymbol) => {
+  if (!token || !newSymbol) return
+  try {
+    const res = await axios.get('http://127.0.0.1:8000/api/v1/accounts/favorites/', {
+      headers: { Authorization: `Token ${token}` }
+    })
+    isFavorite.value = res.data.some(item => item.symbol === newSymbol)
+  } catch (err) {
+    console.error('찜 상태 확인 실패:', err)
+  }
+})
+
 const toggleFavorite = async () => {
   const token = localStorage.getItem('token')
   if (!token) {
@@ -175,27 +190,23 @@ const toggleFavorite = async () => {
   try {
     // 찜 상태 변경 (찜 해제 / 찜 하기)
     if (isFavorite.value) {
-      // 찜 해제
       await axios.delete('http://127.0.0.1:8000/api/v1/accounts/favorites/', {
         headers,
         data: { symbol: symbol.value }
       })
       isFavorite.value = false
     } else {
-      // 찜 하기
-      await axios.post('http://127.0.0.1:8000/api/v1/accounts/favorites/', 
+      await axios.post('http://127.0.0.1:8000/api/v1/accounts/favorites/',
         { symbol: symbol.value },
         { headers }
       )
       isFavorite.value = true
     }
-    
-    // 찜 상태 갱신 (서버에서 찜 상태 확인)
-    await checkFavoriteStatus(symbol.value)
   } catch (err) {
     console.error('찜 처리 실패:', err)
   }
-}
+}  // ✅ 여기가 누락되었음
+
 </script>
 
 <style scoped>
