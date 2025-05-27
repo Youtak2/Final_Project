@@ -40,8 +40,8 @@
 import { ref, nextTick, computed } from 'vue'
 import axios from 'axios'
 import Chart from 'chart.js/auto'
-import tickers from '../assets/tickers.json'
-import FavoriteButton from '../components/FavoriteButton.vue'
+import tickers from "@/assets/tickers.json"
+import FavoriteButton from "@/components/FavoriteButton.vue"
 
 
 const symbolInput = ref('')

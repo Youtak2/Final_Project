@@ -4,7 +4,7 @@
     <header class="header">
       <div class="logo">
         <RouterLink to="/">
-          <img src="@/pictures/제목 없음.png" alt="공탁금" />
+          <img src="@/pictures/logo.png" alt="공탁금" />
         </RouterLink>
       </div>
       <nav class="nav">

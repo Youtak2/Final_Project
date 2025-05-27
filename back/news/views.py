@@ -3,14 +3,20 @@ import requests
 from bs4 import BeautifulSoup
 import google.generativeai as genai
 import re
+import os
+from dotenv import load_dotenv  # ✅ 추가
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import NewsArticle
 
+# ✅ .env 불러오기
+load_dotenv()
+
 # ✅ Gemini 설정
-genai.configure(api_key="AIzaSyAMYo5qfBsIjcFV8o1KU3Y77Ln-S8GGsss")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
+
 
 # ✅ 1. RSS 기반 뉴스 수집
 def crawl_news(request):

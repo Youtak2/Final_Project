@@ -55,8 +55,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
-import KOREAN_LABELS from '../assets/korean_labels.json'
-import tickers from '../assets/tickers.json'
+import KOREAN_LABELS from "@/assets/korean_labels.json"
+import tickers from "@/assets/tickers.json"
 import { Bar } from 'vue-chartjs'
 import {
   Chart as ChartJS,

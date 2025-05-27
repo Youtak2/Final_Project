@@ -93,7 +93,7 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
-import FavoriteButton from '../components/FavoriteButton.vue'
+import FavoriteButton from "@/components/FavoriteButton.vue"
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -114,39 +114,6 @@ const isSavingLoading = ref(false)
 const token = localStorage.getItem('token')
 
 // 해외주식 추천 호출
-const fetchRecommendations = async () => {
-  isLoading.value = true
-  stocks.value = []
-  fetchedOnce.value = false
-  avgPredictionRate.value = 0
-  isVip.value = false
-
-  if (!token) {
-    alert('로그인이 필요합니다')
-    isLoading.value = false
-    return
-  }
-
-  try {
-    const res = await axios.get('http://127.0.0.1:8000/api/v1/recommend/', {
-      headers: { Authorization: `Token ${token}` }
-    })
-    stocks.value = res.data.stock_recommendations
-    avgPredictionRate.value = res.data.average_prediction_rate || 0
-    isVip.value = res.data.is_vip || false
-  } catch (err) {
-    console.error('API 요청 실패:', err)
-    if (err.response?.status === 400 && err.response.data?.redirect) {
-      alert(err.response.data.error || '설정이 필요합니다.')
-      router.push(err.response.data.redirect)
-    }
-  } finally {
-    isLoading.value = false
-    fetchedOnce.value = true
-  }
-}
-
-// 예금/적금 추천 호출
 const fetchSavingRecommendations = async () => {
   isSavingLoading.value = true
   savingRecommendations.value = []
@@ -169,11 +136,18 @@ const fetchSavingRecommendations = async () => {
     }))
   } catch (err) {
     console.error('예금/적금 API 요청 실패:', err)
+    
+    // ✅ 설정 누락 등의 이유로 400 내려올 때 대응
+    if (err.response?.status === 400 && err.response.data?.redirect) {
+      alert(err.response.data.error || '설정이 필요합니다.')
+      router.push(err.response.data.redirect)
+    }
   } finally {
     isSavingLoading.value = false
     fetchedOnceSaving.value = true
   }
 }
+
 
 const formatNumber = (val) => {
   if (val === null || val === undefined) return '-'
@@ -183,6 +157,39 @@ const formatNumber = (val) => {
 const formatPercent = (val) => {
   if (val === null || val === undefined) return '-'
   return `${(val * 100).toFixed(1)}%`
+}
+const fetchRecommendations = async () => {
+  isLoading.value = true
+  stocks.value = []
+  fetchedOnce.value = false
+  avgPredictionRate.value = 0
+  isVip.value = false
+
+  if (!token) {
+    alert('로그인이 필요합니다')
+    isLoading.value = false
+    return
+  }
+
+  try {
+    const res = await axios.get('http://127.0.0.1:8000/api/v1/recommend/', {
+      headers: { Authorization: `Token ${token}` }
+    })
+    stocks.value = res.data.stock_recommendations
+    avgPredictionRate.value = res.data.average_prediction_rate || 0
+    isVip.value = res.data.is_vip || false
+  } catch (err) {
+    console.error('해외주식 추천 API 요청 실패:', err)
+
+    // ✅ 설정 누락으로 인한 400 오류 처리
+    if (err.response?.status === 400 && err.response.data?.redirect) {
+      alert(err.response.data.error || '설정이 필요합니다.')
+      router.push(err.response.data.redirect)
+    }
+  } finally {
+    isLoading.value = false
+    fetchedOnce.value = true
+  }
 }
 </script>
 

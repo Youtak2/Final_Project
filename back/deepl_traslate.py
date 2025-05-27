@@ -1,9 +1,14 @@
 import requests
 import json
 import time
+import os
+from dotenv import load_dotenv
 
-# 여기에 발급받은 DeepL API 키
-DEEPL_API_KEY = "BTUSwRUm4qKfP45Bg"
+# ✅ .env 파일 불러오기
+load_dotenv()
+
+# ✅ 환경 변수에서 API 키 읽기
+DEEPL_API_KEY = os.getenv("DEEPL_API_KEY")
 
 financial_terms = [
     "Net Income", "Total Revenue", "Operating Income", "EBITDA",
