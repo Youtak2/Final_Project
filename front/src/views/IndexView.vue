@@ -1,7 +1,7 @@
 <template>
   <div class="video-container">
     <video autoplay muted loop playsinline>
-      <source src="@/video/mainpagevideo.mp4" type="video/mp4" />
+      <source src="/video/mainpagevideo.mp4" type="video/mp4" />
     </video>
   </div>
     <div>
@@ -19,16 +19,26 @@ const kakaoLogin = () => {
 </script>
 
 <style scoped>
-.video-container {
+.video-wrapper {
+  position: relative;
   width: 100%;
-  max-height: 600px;
+  height: 600px;
   overflow: hidden;
 }
 
-video {
+.video-bg {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+/* ✅ 영상 위에 올리는 영역 */
+.video-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
 }
 </style>

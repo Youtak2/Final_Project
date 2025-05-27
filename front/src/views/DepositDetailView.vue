@@ -1,23 +1,32 @@
 <template>
   <div class="detail-container" v-if="product">
-    <h2>{{ product.name }}</h2>
-    <p><strong>금융회사:</strong> {{ product.bank_name }}</p>
-    <p><strong>금리:</strong> {{ product.rate }}%</p>
-    <p><strong>저축 기간:</strong> {{ product.save_term }}개월</p>
+    <!-- 찜 버튼 -->
+    <button type="button" class="bookmark-top" @click="toggleBookmark(product.id)">
+      <span v-if="bookmarked">💖</span>
+      <span v-else>🤍</span>
+    </button>
+
+    <div class="bank-brand" data-aos="fade-up">
+      <img :src="`/logos/${product.bank_name}.png`" alt="logo" />
+      <span>{{ product.bank_name }}</span>
+    </div>
+
+    <div class="info-section" data-aos="fade-up" data-aos-delay="100">
+      <h3>📌 상품 정보</h3>
+      <p><strong>금융회사:</strong> {{ product.bank_name }}</p>
+      <p><strong>상품명:</strong> {{ product.name }}</p>
+    </div>
+
+    <div class="info-section" data-aos="fade-up" data-aos-delay="200">
+      <h3>💰 금리 정보</h3>
+      <p><strong>금리:</strong> {{ product.rate }}%</p>
+      <p><strong>저축 기간:</strong> {{ product.save_term }}개월</p>
+    </div>
+    
     <p><strong>상품 설명:</strong> {{ product.description || '-' }}</p>
     <p><strong>가입 방법:</strong> {{ product.join_way || '-' }}</p>
     <p><strong>가입 대상:</strong> {{ product.join_member || '-' }}</p>
 
-    <!-- <div v-if="product.join_url">
-      <a :href="product.join_url" target="_blank" class="join-btn">👉 가입하러 가기</a>
-    </div>
-    <p v-else>가입 링크가 제공되지 않습니다.</p> -->
-
-    <!-- 찜 버튼 -->
-    <button @click="toggleBookmark(product.id)" class="bookmark-btn">
-      <span v-if="bookmarked">💖 찜 해제</span>
-      <span v-else>🤍 찜하기</span>
-    </button>
   </div>
 
   <p v-else>로딩 중입니다...</p>
@@ -82,6 +91,7 @@ onMounted(fetchProductDetail)
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 .join-btn {
@@ -94,12 +104,59 @@ onMounted(fetchProductDetail)
   border-radius: 6px;
 }
 
-.bookmark-btn {
-  margin-top: 1rem;
-  background-color: #f4f4f4;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
+.info-section {
+  background-color: #f9fafb;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.bank-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.bank-brand img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.floating-bookmark {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 12px 18px;
+  border-radius: 50px;
+  font-size: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   cursor: pointer;
 }
+
+
+.bookmark-top {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--red-main);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+
+.bookmark-top:hover {
+  background-color: #fef2f2;
+}
+
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <h2>📈 과거 시세 차트</h2>
+  <div class="chart-page" data-aos="fade-up">
+    <h2 data-aos="fade-up" data-aos-delay="100">📈 과거 시세 차트</h2>
 
-    <div style="margin-bottom: 1rem; position: relative;">
+    <div class="toolbar" style="margin-bottom: 1rem; position: relative;" data-aos="fade-up" data-aos-delay="200">
       <input
         v-model="searchTerm"
         placeholder="종목명 입력 (ex: apple, AAPL)"
@@ -34,7 +34,7 @@
     </div>
 
     <!-- 찜 버튼 -->
-    <div v-if="chartData && lastFetchedData.length > 0" style="margin-bottom: 10px;">
+    <div class="favorite-toggle" v-if="chartData && lastFetchedData.length > 0" style="margin-bottom: 10px;">
       <button
         @click="toggleFavorite"
         :style="{ backgroundColor: isFavorite ? '#ff6b81' : '#f1f2f6' }"
@@ -43,15 +43,21 @@
       </button>
     </div>
 
-    <!-- 차트 -->
-    <div style="width: 100%; max-width: 1200px; height: 600px;">
+    <!-- 차트 또는 로딩 -->
+    <div class="chart-wrapper" style="width: 100%; max-width: 1200px; height: 600px;">
+      <div v-if="isLoading" class="loading-message">
+        <img src="/video/Loading.gif" alt="로딩 중..." class="loading-gif" />
+        <p style="text-align: center; color: #3B82F6;">🔄 데이터를 불러오는 중입니다...</p>
+      </div>
+
       <Line
-        v-if="chartData"
+        v-else-if="chartData"
         :data="chartData"
         :options="chartOptions"
         ref="chartRef"
       />
     </div>
+
   </div>
 </template>
 
@@ -94,6 +100,8 @@ const highlightedIndex = ref(-1)
 const lastFetchedData = ref([])
 const isFavorite = ref(false)
 const selectedSymbol = ref('')
+const isLoading = ref(false)
+
 
 const options = [
   { label: '1일', value: '1d' },
@@ -146,6 +154,8 @@ const fetchOhlcv = async () => {
     selectedSymbol.value = ticker
   }
 
+  isLoading.value = true  // ✅ 시작
+
   try {
     const token = localStorage.getItem('token')
     const headers = token ? { Authorization: `Token ${token}` } : {}
@@ -184,6 +194,8 @@ const fetchOhlcv = async () => {
     await checkFavoriteStatus(selectedSymbol.value)
   } catch (err) {
     console.error('📉 OHLCV 조회 실패:', err)
+  } finally {
+    isLoading.value = false // ✅ 종료
   }
 }
 
@@ -332,4 +344,86 @@ button.active {
 .autocomplete-list li:hover {
   background-color: #e6f0ff;
 }
+
+.chart-page {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chart-page h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1E3A8A;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.toolbar input,
+.toolbar select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.toolbar button {
+  background-color: #3B82F6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.toolbar button:hover {
+  background-color: #2563eb;
+}
+
+.favorite-toggle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.favorite-toggle button {
+  background-color: #f1f2f6;
+  color: #111;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.favorite-toggle button.active {
+  background-color: #EF4444;
+  color: white;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 600px;
+  padding: 1rem;
+}
+
+.loading-gif {
+  width: 200px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
 </style>

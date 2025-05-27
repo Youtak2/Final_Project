@@ -1,37 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import AuthView from '@/views/auth/AuthView.vue'
-import SignInView from '@/views/auth/SignInView.vue'
-import SignupView from '@/views/auth/SignupView.vue'
-
-import GoogleCallbackView from '@/views/social_callback/GoogleCallbackView.vue'
-import KakaoCallback from '@/views/social_callback/KakaoCallback.vue'
-import NaverCallback from '@/views/social_callback/NaverCallback.vue'
-
-import DepositView from '@/views/financial/DepositView.vue'
-import DepositDetailView from '@/views/financial/DepositDetailView.vue'
-import FinancialView from '@/views/financial/FinancialView.vue'
-import RecommendView from '@/views/financial/RecommendView.vue'
-import StockpriceView from '@/views/financial/StockpriceView.vue'
-
-import CommunityView from '@/views/community/CommunityView.vue'
-import CommunityDetailView from '@/views/community/CommunityDetailView.vue'
-import CommunityWriteView from '@/views/community/CommunityWriteView.vue'
-
-import MyPageView from '@/views/mypage/MyPageView.vue'
-import BookmarkListView from '@/views/mypage/BookmarkListView.vue'
-import FavoriteStocksView from '@/views/mypage/FavoriteStocksView.vue'
-import UserProfileView from '@/views/mypage/UserProfileView.vue'
-
-import BankSearchView from '@/views/search/BankSearchView.vue'
-import NewsSearchView from '@/views/search/NewsSearchView.vue'
-
-import PortfolioView from '@/views/portfolio/PortfolioView.vue'
-import SimulationView from '@/views/portfolio/SimulationView.vue'
-
-import IndexView from '@/views/common/IndexView.vue'
+import IndexView from '../views/IndexView.vue'
+import KakaoCallback from '../views/KakaoCallback.vue'
+import AuthView from '@/views/AuthView.vue'
+import SignupView from '@/views/SignupView.vue'
+import SignInView from '@/views/SignInView.vue'
+import MyPageView from '@/views/MyPageView.vue'
+import PortfolioView from '@/views/PortfolioView.vue'
+import BankSearchView from '@/views/BankSearchView.vue'
+import CommunityView from '@/views/CommunityView.vue'
+import CommunityDetailView from '@/views/CommunityDetailView.vue'
+import CommunityWriteView from '@/views/CommunityWriteView.vue'
+import UserProfileView from '@/views/UserProfileView.vue' 
+import DepositView from '@/views/DepositView.vue'
+import FinancialView from '@/views/FinancialView.vue'
+import StockpriceView from '@/views/StockpriceView.vue'
+import NewsSearchView from '@/views/NewsSearchView.vue'
+import RecommendView from '@/views/RecommendView.vue'
+import BookmarkListView from '@/views/BookmarkListView.vue'
+import DepositDetailView from '@/views/DepositDetailView.vue'
+import FavoriteStocksView from '@/views/FavoriteStocksView.vue'
+import SimulationView from '@/views/SimulationView.vue'
 import BuyStock from '@/components/BuyStock.vue'
 import SellStock from '@/components/SellStock.vue'
-
+import GoogleCallbackView from '@/views/GoogleCallbackView.vue'
+import NaverCallback from '@/views/NaverCallback.vue'
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem('token')

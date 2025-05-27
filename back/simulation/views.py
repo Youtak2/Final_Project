@@ -138,3 +138,19 @@ def sell_stock(request):
         )
 
     return Response({"message": f"Sold {shares} shares of {symbol} at {price} USD"})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_current_prices(request):
+    symbols = request.data.get('symbols', [])
+    result = {}
+
+    for symbol in symbols:
+        try:
+            ticker = yf.Ticker(symbol)
+            price = ticker.info['regularMarketPrice']
+            result[symbol] = round(price, 2)
+        except:
+            result[symbol] = None
+
+    return Response(result)

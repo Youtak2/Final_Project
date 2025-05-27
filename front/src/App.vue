@@ -4,7 +4,7 @@
     <header class="header">
       <div class="logo">
         <RouterLink to="/">
-          <img src="@/pictures/logo.png" alt="공탁금" />
+          <img src="@/pictures/제목 없음.png" alt="공탁금" />
         </RouterLink>
       </div>
       <nav class="nav">
@@ -19,8 +19,8 @@
       </nav>
 
      <div class="nav-icons">
-        <input type="text" placeholder="검색..." class="search-input" />
-        <span class="icon">🔍</span>
+        <!-- <input type="text" placeholder="검색..." class="search-input" />
+        <span class="icon">🔍</span> -->
 
         <!-- 로그인 상태별 분기 -->
         <div v-if="auth.isLogin">
@@ -47,6 +47,10 @@
       </div>
     </header>
 
+    <!-- Hero -->
+    <HeroSection v-if="$route.path === '/'" />
+    <ServiceSummary v-if="$route.path === '/'"/>
+
     <!-- 본문 -->
     <main>
       <RouterView />
@@ -60,22 +64,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import HeroSection from '@/components/HeroSection.vue'
+import ServiceSummary from '@/components/ServiceSummary.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
 const showDropdown = ref(false)
 
-// ✅ 앱 로드 시 로그인 상태 복원
+const isLogin = computed(() => auth.isLogin)
+
+// 앱 로드 시 로그인 상태 복원
 onMounted(() => {
   if (auth.token && !auth.user) {
     auth.fetchUser()
   }
 })
 
-// ✅ 로그아웃 함수 수정
+// 로그아웃 함수 수정
 const logout = () => {
   auth.logout()  // clearToken → logout 으로 변경
   alert('로그아웃 되었습니다.')
@@ -86,10 +94,22 @@ const logout = () => {
 
 
 <style>
+:root {
+  --blue-dark: #1E3A8A;
+  --blue-main: #3B82F6;
+  --red-main: #EF4444;
+  --orange-main: #F97316;
+  --gray-text: #6B7280;
+  --bg-light: #F9FAFB;
+  --line-gray: #E5E7EB;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+
 html, body, #app {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: var(--bg-light);
 }
 
 #app {
@@ -98,6 +118,7 @@ html, body, #app {
   min-height: 100vh;
 }
 
+/* Header */
 .header {
   position: sticky;
   top: 0;
@@ -105,11 +126,11 @@ html, body, #app {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 3rem;
+  padding: 1.25rem 2rem;
   background-color: white;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid var(--line-gray);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
   flex-wrap: wrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .logo img {
@@ -121,38 +142,28 @@ html, body, #app {
   flex: 1;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 3rem;
+  gap: 2rem;
 }
 
 .nav a {
-  color: #111;
+  color: var(--blue-dark);
+  font-weight: 500;
+  font-size: 1rem;
   text-decoration: none;
-  font-weight: 600;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  white-space: nowrap;
+  transition: color 0.2s ease;
 }
 
+.nav a:hover {
+  color: var(--blue-main);
+}
+
+/* Icons and Auth */
 .nav-icons {
   display: flex;
-  gap: 1.5rem;
-  font-size: 1.8rem;
-  color: #111;
-  cursor: pointer;
   align-items: center;
-}
-
-main {
-  flex: 1;
-  padding: 3rem 2rem;
-  background-color: #f9fbff;
-}
-
-.footer {
-  text-align: center;
-  padding: 1.5rem;
-  background-color: #f1f1f1;
-  font-size: 0.9rem;
-  color: #666;
+  gap: 1.25rem;
+  font-size: 1.2rem;
+  color: var(--gray-text);
 }
 
 .search-input {
@@ -162,23 +173,22 @@ main {
   border-radius: 6px;
 }
 
-.mypage-link {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 0.85rem;
-  color: #555;
+.mypage-link,
+.login-link {
+  font-size: 0.9rem;
+  color: var(--blue-dark);
   text-decoration: none;
-  margin-left: 1rem;
 }
 
 .logout-btn {
-  background-color: transparent;
+  font-size: 0.9rem;
+  color: var(--red-main);
+  background: transparent;
   border: none;
-  color: #555;
-  font-size: 0.85rem;
   cursor: pointer;
-  text-decoration: underline;
 }
 
+/* Dropdown */
 .dropdown-wrapper {
   position: relative;
 }
@@ -208,4 +218,22 @@ main {
 .dropdown-menu a:hover {
   background-color: #f5f5f5;
 }
+
+/* Main */
+main {
+  flex: 1;
+  padding: 4rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #f1f1f1;
+  font-size: 0.9rem;
+  color: #666;
+}
+
 </style>

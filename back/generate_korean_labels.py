@@ -4,14 +4,7 @@ import json
 import time
 
 # ✅ DeepL API 키 입력
-import os
-from dotenv import load_dotenv
-
-# ✅ .env 파일 불러오기
-load_dotenv()
-
-# ✅ 환경 변수에서 API 키 읽기
-DEEPL_API_KEY = os.getenv("DEEPL_API_KEY")
+DEEPL_API_KEY = "b11f45f5-c985-4551-a7a9-4f8d7eb8363a:fx"
 
 # ✅ 번역할 종목 티커 (대표 1~2개로 충분)
 TICKERS = ["AAPL", "MSFT", "GOOGL"]

@@ -3,20 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 import google.generativeai as genai
 import re
-import os
-from dotenv import load_dotenv  # ✅ 추가
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import NewsArticle
-
-# ✅ .env 불러오기
-load_dotenv()
+from django.db.models import Count
 
 # ✅ Gemini 설정
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key="AIzaSyAMYo5qfBsIjcFV8o1KU3Y77Ln-S8GGsss")
 model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
-
 
 # ✅ 1. RSS 기반 뉴스 수집
 def crawl_news(request):
@@ -102,7 +97,15 @@ def summarize_news(request):
             # 감성 분석 결과 추출
             match = re.search(r"(긍정|부정|중립)", content)
             if match:
-                article.impact = match.group(1)
+                sentiment_raw = match.group(1)
+                if "긍정" in sentiment_raw:
+                    article.impact = "긍정"
+                elif "부정" in sentiment_raw:
+                    article.impact = "부정"
+                elif "중립" in sentiment_raw:
+                    article.impact = "중립"
+                else:
+                    article.impact = "기타"
             else:
                 article.impact = "기타"
 
@@ -144,3 +147,24 @@ def summarized_results(request):
         for a in articles
     ]
     return JsonResponse({"results": results})
+
+def sentiment_stats(request):
+    symbol = request.GET.get("symbol", "").upper()
+    if not symbol:
+        return JsonResponse({"error": "symbol 파라미터가 필요합니다."}, status=400)
+
+    counts = (
+        NewsArticle.objects.filter(symbol=symbol)
+        .values("impact")
+        .annotate(count=Count("id"))
+    )
+
+    stats = {"긍정": 0, "부정": 0, "중립": 0, "기타": 0}
+    for item in counts:
+        impact = item["impact"]
+        if impact in stats:
+            stats[impact] = item["count"]
+        else:
+            stats["기타"] += item["count"]
+
+    return JsonResponse({"symbol": symbol, "sentiment": stats})

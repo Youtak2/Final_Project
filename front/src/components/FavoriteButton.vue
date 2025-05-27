@@ -1,9 +1,10 @@
 <template>
   <button
+    class="favorite-button"
     @click="toggleFavorite"
     :style="{ backgroundColor: isFavorite ? '#ff6b81' : '#f1f2f6' }"
   >
-    {{ isFavorite ? '💖 관심 등록 해제' : '🤍 관심 등록 하기' }}
+    {{ isFavorite ? '💖 관심 해제' : '🤍 관심 등록' }}
   </button>
 </template>
 
@@ -70,11 +71,25 @@ watch(() => props.symbol, checkFavoriteStatus)
 </script>
 
 <style scoped>
-button {
-  margin-right: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
+.favorite-button {
+  width: 100%;   /* ✅ 부모로부터 전체 너비 상속 */
+  padding: 10px;
+  background-color: #f87171;
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-size: 0.75rem;
+  transition: 0.2s;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 110px; 
+  white-space: nowrap;
+}
+.favorite-button:hover {
+  background-color: #ef4444;
+  opacity: 0.9;
 }
 </style>
