@@ -64,7 +64,7 @@ const passwordMismatch = computed(() => {
 
 const checkUsername = async () => {
   try {
-    const res = await axios.get(`http://127.0.0.1:8000/api/v1/accounts/check-username/?username=${username.value}`)
+    const res = await axios.get(`/api/v1/accounts/check-username/?username=${username.value}`)
     usernameStatus.value = res.data.available ? 'available' : 'taken'
   } catch (err) {
     console.error('중복 체크 실패:', err)
